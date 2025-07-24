@@ -3,7 +3,7 @@
 # ==============================================================================
 
 # ==============================================================================
-# SPRING BOOT / JAVA BACKEND
+# JAVA / SPRING BOOT
 # ==============================================================================
 
 # Compiled class files
@@ -45,30 +45,19 @@ buildNumber.properties
 
 # Gradle
 .gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
 
 # Spring Boot
 *.original
 spring-boot-*.jar
 
-# Application properties with sensitive data
-application-prod.properties
-application-local.properties
-**/application-*.yml
-**/application-*.yaml
-!**/application.yml
-!**/application.yaml
-
-# H2 Database files
-*.db
-*.mv.db
-*.trace.db
-
 # ==============================================================================
-# ANGULAR / NODE.JS FRONTEND
+# ANGULAR / NODE.JS
 # ==============================================================================
 
 # Dependencies
@@ -76,6 +65,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
 
 # Runtime data
 pids
@@ -105,6 +96,9 @@ build/Release
 # Dependency directories
 jspm_packages/
 
+# Snowpack dependency directory
+web_modules/
+
 # TypeScript cache
 *.tsbuildinfo
 
@@ -113,6 +107,12 @@ jspm_packages/
 
 # Optional eslint cache
 .eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
 
 # Optional REPL history
 .node_repl_history
@@ -123,55 +123,31 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# parcel-bundler cache
+.cache
+.parcel-cache
 
-# Angular specific
-dist/
-tmp/
-out-tsc/
-bazel-out
+# Next.js build output
+.next
+out
 
-# Angular CLI cache
-.angular/
+# Nuxt.js build / generate output
+.nuxt
+dist
 
-# Angular Environment Files (contains sensitive configuration)
-**/environments/environment.prod.ts
-**/environments/environment.local.ts
-**/environments/environment.staging.ts
-# Keep the default environment file but ignore sensitive variants
-# **/environments/environment.ts  # Uncomment this line if environment.ts contains secrets
-
-# Sass cache
-.sass-cache/
-
-# Storybook build outputs
-.out
-.storybook-out
-storybook-static
+# Angular build output
+frontend/dist/
+frontend/.angular/
 
 # ==============================================================================
-# DEVELOPMENT TOOLS & EDITORS
+# IDE / EDITOR FILES
 # ==============================================================================
-
-# VS Code
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
 
 # IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
-out/
 
 # Eclipse
 .apt_generated
@@ -181,9 +157,6 @@ out/
 .settings
 .springBeans
 .sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
 
 # NetBeans
 /nbproject/private/
@@ -192,25 +165,11 @@ bin/
 /nbdist/
 /.nb-gradle/
 
-# Sublime Text
-*.sublime-workspace
-
-# Vim
-*.swp
-*.swo
-
-# Emacs
-*~
-\#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
-*.elc
-auto-save-list
-tramp
-.\#*
+# VS Code
+.vscode/
 
 # ==============================================================================
-# OPERATING SYSTEM
+# OPERATING SYSTEM FILES
 # ==============================================================================
 
 # macOS
@@ -237,9 +196,8 @@ Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
-*.tmp
-*.temp
-Desktop.ini
+*.stackdump
+[Dd]esktop.ini
 $RECYCLE.BIN/
 *.cab
 *.msi
@@ -256,50 +214,33 @@ $RECYCLE.BIN/
 .nfs*
 
 # ==============================================================================
-# DATABASE & EXTERNAL SERVICES
+# SENSITIVE CONFIGURATION FILES
 # ==============================================================================
+
+# Application properties with sensitive data
+**/application.properties
+**/application-*.properties
+**/application.yml
+**/application-*.yml
+
+# Environment files
+**/*environment*.ts
+**/*environment*.js
+**/environments/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Database files
+*.db
 *.sqlite
 *.sqlite3
-*.db-journal
 
-# Redis dump files
-dump.rdb
-
-# MongoDB
-*.mongorc.js
-
-# ==============================================================================
-# DOCKER & DEPLOYMENT
-# ==============================================================================
-
-# Docker
-.dockerignore
-docker-compose.override.yml
-
-# Kubernetes
-*.kubeconfig
-
-# Terraform
-*.tfstate
-*.tfstate.*
-.terraform/
-.terraform.lock.hcl
-
-# ==============================================================================
-# CERTIFICATES & SECURITY
-# ==============================================================================
-
-# SSL certificates
-*.pem
+# Security keys
 *.key
-*.crt
-*.p12
-*.jks
-*.keystore
-
-# JWT keys
+*.pem
 jwt-*.key
 
 # ==============================================================================
@@ -323,7 +264,7 @@ tmp/
 *~
 
 # ==============================================================================
-# PROJECT SPECIFIC (ADD YOUR CUSTOM IGNORES HERE)
+# PROJECT SPECIFIC
 # ==============================================================================
 
 # Custom application properties
