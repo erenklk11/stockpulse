@@ -1,0 +1,25 @@
+h1 {
+  font-family: "Segoe UI Bold", "Segoe UI", sans-serif;
+  font-weight: bold;
+}
+
+h2, h3 {
+  font-family: "Segoe UI Semibold", "Segoe UI", sans-serif;
+  font-weight: 600;
+}
+
+* {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+button {
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #313030;
+}

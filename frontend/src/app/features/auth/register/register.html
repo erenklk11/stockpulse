@@ -1,0 +1,85 @@
+<div class="logo">
+  <img src="/logo.jpg" width="60px" height="60px" alt="Logo" />
+</div>
+
+<div class="login-container">
+  <div class="header-container">
+  </div>
+  <h2>Register</h2>
+
+  <form [formGroup]="registerForm" (ngSubmit)="submit()">
+
+    <div class="form-group">
+      <label for="first-name">First Name</label>
+      <div class="input-container">
+        <i class="input-icon fas fa-user"></i>
+        <input
+          type="text"
+          id="first-name"
+          name="first-name"
+          formControlName="firstName"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': (registerForm.get('firstName')?.errors && firstAttemptMade) }"
+          placeholder="Enter your first name*"
+        />
+      </div>
+      <div *ngIf="registerForm.get('firstName')?.errors?.['required'] && firstAttemptMade" class="invalid-feedback">
+        First Name is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <div class="input-container">
+        <i class="input-icon fas fa-envelope"></i>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          formControlName="email"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': (registerForm.get('email')?.errors && firstAttemptMade) }"
+          placeholder="Enter your email*"
+        />
+      </div>
+      <div *ngIf="registerForm.get('email')?.errors?.['required'] && firstAttemptMade" class="invalid-feedback">
+        Email is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <div class="input-container">
+        <i class="input-icon fas fa-lock"></i>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          name="password"
+          formControlName="password"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': (registerForm.get('password')?.errors && firstAttemptMade) }"
+          placeholder="Enter your password*"
+        />
+        <i
+          class="toggle-password-visibility fas"
+          [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'"
+          (click)="togglePasswordVisibility()"
+        ></i>
+      </div>
+      <div *ngIf="registerForm.get('password')?.errors?.['required'] && firstAttemptMade" class="invalid-feedback">
+        Password is required.
+      </div>
+      <div *ngIf="registerForm.get('password')?.errors?.['minlength'] && firstAttemptMade" class="invalid-feedback">
+        Password must be at least {{passwordMinLength}} characters long.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="login-btn">Register</button>
+    </div>
+
+    <div class="footer-container">
+      <a routerLink="/auth/login">Already have an account? Sign In</a>
+    </div>
+  </form>
+</div>
