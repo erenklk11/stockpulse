@@ -1,5 +1,7 @@
 package com.erenkalkan.stockpulse.service;
 
+import com.erenkalkan.stockpulse.model.dto.LoginRequestDTO;
+import com.erenkalkan.stockpulse.model.dto.LoginResponseDTO;
 import com.erenkalkan.stockpulse.model.dto.RegisterRequestDTO;
 import com.erenkalkan.stockpulse.model.dto.RegisterResponseDTO;
 import com.erenkalkan.stockpulse.model.entity.User;
@@ -8,6 +10,8 @@ import com.erenkalkan.stockpulse.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +49,27 @@ public class AuthService {
             .build();
   }
 
+  public LoginResponseDTO login(LoginRequestDTO request) {
 
+    if (request == null || request.getEmail() == null || request.getPassword() == null) {
+      throw new IllegalArgumentException("Required fields cannot be null");
+    }
+
+    Optional<User> foundUser = userRepository.findByEmail(request.getEmail());
+    if (foundUser.isEmpty()) {
+      throw new IllegalStateException("User with email '" + request.getEmail() + "' does not exist");
+    }
+
+    if (!passwordEncoder.matches(request.getPassword(), foundUser.get().getPassword())) {
+      throw new IllegalArgumentException("Password is wrong");
+    }
+
+    // TODO: Create JWT or OAuht2 token here
+
+    return LoginResponseDTO.builder()
+            .firstName(foundUser.get().getFirstName())
+            .email(foundUser.get().getEmail())
+            .token("WILL BE SET VIA SERVICE LATER")
+            .build();
+  }
 }
