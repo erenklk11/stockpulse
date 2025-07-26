@@ -22,6 +22,7 @@ public class AuthService {
 
   private final PasswordEncoder passwordEncoder;
   private final UserService userService;
+  private final JwtService jwtService;
 
   public RegisterResponseDTO register(RegisterRequestDTO request) {
 
@@ -64,12 +65,12 @@ public class AuthService {
       throw new InvalidCredentialsException("Password is incorrect");
     }
 
-    // TODO: Create JWT or OAuth2 token here
+    String token = jwtService.generateToken(userService.loadUserByUsername(request.getEmail()));
 
     return LoginResponseDTO.builder()
             .firstName(user.getFirstName())
             .email(user.getEmail())
-            .token("WILL BE SET VIA SERVICE LATER")
+            .token(token)
             .build();
   }
 }

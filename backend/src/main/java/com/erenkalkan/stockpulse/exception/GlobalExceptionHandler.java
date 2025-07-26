@@ -82,6 +82,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
+    @ExceptionHandler(JwtConfigurationException.class)
+    public ResponseEntity<Map<String, Object>> handleJwtConfigurationException(JwtConfigurationException ex) {
+        Map<String, Object> errorResponse = createErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "JWT Configuration Error",
+                "JWT service configuration error. Please contact support."
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
     @ExceptionHandler(DatabaseOperationException.class)
     public ResponseEntity<Map<String, Object>> handleDatabaseOperationException(DatabaseOperationException ex) {
         Map<String, Object> errorResponse = createErrorResponse(
