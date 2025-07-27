@@ -217,9 +217,7 @@ $RECYCLE.BIN/
 # SENSITIVE CONFIGURATION FILES
 # ==============================================================================
 
-# Application properties with sensitive data
-**/application.properties
-**/application-*.properties
+# Application YAML files with sensitive data
 **/application.yml
 **/application-*.yml
 
