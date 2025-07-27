@@ -23,7 +23,8 @@ import java.util.List;
 public class Watchlist {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "watchlist_seq")
+  @SequenceGenerator(name = "watchlist_seq", sequenceName = "watchlists_seq", allocationSize = 1)
   @Column(name = "id")
   private Long id;
 

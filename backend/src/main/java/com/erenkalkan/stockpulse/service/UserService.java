@@ -4,12 +4,20 @@ import com.erenkalkan.stockpulse.exception.DatabaseOperationException;
 import com.erenkalkan.stockpulse.model.entity.User;
 import com.erenkalkan.stockpulse.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+import org.springframework.transaction.TransactionSystemException;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import java.util.Optional;
+import java.util.Set;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -37,9 +45,11 @@ public class UserService implements UserDetailsService {
 
   public User saveUser(User user) {
     try {
+      log.debug("Attempting to save user with email: {}", user.getEmail());
       return userRepository.save(user);
     } catch (Exception e) {
-      throw new DatabaseOperationException("Failed to save user to database", e);
+      log.error("Unexpected error while saving user: {}", user.getEmail(), e);
+      throw new DatabaseOperationException("Failed to save user to database: " + e.getMessage(), e);
     }
   }
 }

@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name="users")
@@ -29,43 +30,52 @@ import java.util.List;
 public class User implements UserDetails {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+  @SequenceGenerator(name = "user_seq", sequenceName = "users_seq", allocationSize = 1)
   @Column(name="id")
   private Long id;
 
   @NotBlank(message = "First name is required")
-  @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
+  @Size(min = 2, max = 30, message = "First name must be between 2 and 30 characters")
   @Column(name="first_name", nullable = false)
   private String firstName;
 
   @NotBlank(message = "Email is required")
   @Email(message = "Email should be valid")
-  @Size(max = 100, message = "Email must not exceed 100 characters")
+  @Size(max = 50, message = "Email must not exceed 50 characters")
   @Column(name="email", unique = true, nullable = false)
   private String email;
 
   @NotBlank(message = "Password is required")
-  @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
+  @Size(max = 100, message = "Password must not exceed 100 characters")
   @Column(name="password", nullable = false)
   private String password;
 
   @NotNull(message = "Role is required")
   @Column(name="role", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Builder.Default
   private Role role = Role.REGULAR_USER;
 
+  @Builder.Default
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<Watchlist> watchlist;
-
-  @Column(name = "is_verified")
-  private boolean isVerified = false;
+  private List<Watchlist> watchlist = new ArrayList<>();
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now();
   }
 
   @Override

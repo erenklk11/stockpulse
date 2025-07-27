@@ -3,7 +3,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {AuthService} from '../../../core/auth/auth';
 import {RegisterDTO} from './model/register-dto';
 import {CommonModule} from '@angular/common';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -25,15 +25,19 @@ export class RegisterComponent {
 
   registerForm : FormGroup = new FormGroup({
     firstName : new FormControl('', [
-      Validators.required
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(30)
     ]),
     email : new FormControl('', [
       Validators.required,
-      Validators.email
+      Validators.email,
+      Validators.maxLength(50)
     ]),
     password : new FormControl('', [
       Validators.required,
       Validators.minLength(RegisterComponent.MIN_PASSWORD_LENGTH),
+      Validators.maxLength(50)
     ])
   });
 
@@ -41,7 +45,8 @@ export class RegisterComponent {
     return RegisterComponent.MIN_PASSWORD_LENGTH;
   }
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,
+              private  router: Router) {}
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -52,18 +57,27 @@ export class RegisterComponent {
 
     if (this.registerForm.valid) {
       const registerData: RegisterDTO = {
-        firstName: this.registerForm.get('firstName')?.value,
-        email: this.registerForm.get('email')?.value,
-        password: this.registerForm.get('password')?.value
+        firstName: this.registerForm.get('firstName')?.value?.trim(),
+        email: this.registerForm.get('email')?.value?.trim(),
+        password: this.registerForm.get('password')?.value?.trim()
       };
 
       this.authService.register(registerData).subscribe({
-        next: () => {
-          // TODO: Handle successful register
+        next: (response) => {
+          alert("Registration successful!")
+          this.registerForm.reset();
+          this.firstAttemptMade = false;
+
+          this.router.navigate(['/login'], {
+            state: {
+              registrationData: response,
+              message: 'Registration successful! Please log in with your credentials.'
+            }
+          });
         },
         error: (error) => {
-          // TODO: Handle register error
-          console.error('Register failed:', error);
+          alert("Registration failed!")
+          console.log(error);
         }
       });
     }
