@@ -7,6 +7,30 @@
   </div>
   <h2>Login</h2>
 
+  <!-- Registration Success Message -->
+  <div *ngIf="registrationMessage" class="success-message">
+    {{ registrationMessage }}
+  </div>
+
+  <!-- Google OAuth Login -->
+  <div class="oauth-section">
+    <button
+      type="button"
+      class="google-login-btn"
+      (click)="loginWithGoogle()"
+      [disabled]="isGoogleLoading">
+      <i class="fab fa-google"></i>
+      <span *ngIf="!isGoogleLoading">Continue with Google</span>
+      <span *ngIf="isGoogleLoading">Connecting...</span>
+    </button>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider">
+    <span>OR</span>
+  </div>
+
+  <!-- Email/Password Login Form -->
   <form [formGroup]="loginForm" (ngSubmit)="submit()">
 
     <div class="form-group">
@@ -57,7 +81,9 @@
     </div>
 
     <div class="form-group">
-      <button type="submit" class="login-btn">Login</button>
+      <button type="submit" class="login-btn" [disabled]="!loginForm.valid && firstAttemptMade">
+        Login
+      </button>
     </div>
 
     <div class="footer-container">

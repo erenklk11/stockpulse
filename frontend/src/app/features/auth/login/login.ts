@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormControl, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from '../../../core/auth/auth';
-import { LoginDTO } from './model/login-dto';
+import {AuthService} from '../../../core/auth/auth-service';
+import {LoginRequestDTO} from './model/login-request-dto';
 import {Router, RouterLink} from '@angular/router';
 
 @Component({
@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   showPassword = false;
   registrationMessage: string | null = null;
   registrationData: any = null;
+  isGoogleLoading = false;
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [
@@ -61,20 +62,33 @@ export class LoginComponent implements OnInit {
     this.firstAttemptMade = true;
 
     if (this.loginForm.valid) {
-      const loginData: LoginDTO = {
+      const loginData: LoginRequestDTO = {
         email: this.loginForm.get('email')?.value?.trim(),
         password: this.loginForm.get('password')?.value?.trim()
       };
 
       this.authService.login(loginData).subscribe({
         next: (response) => {
-          alert("Login successful!")
+          // No need to manually store tokens - they're in HTTP-only cookies
+          alert("Login successful!");
+          this.router.navigate(['/dashboard']); // Navigate to main app
         },
         error: (error) => {
-          alert("Login failed!" + error)
+          alert("Login failed!" + error);
           console.error('Login failed:', error);
         }
       });
+    }
+  }
+
+  loginWithGoogle(): void {
+    this.isGoogleLoading = true;
+    try {
+      this.authService.loginWithGoogle();
+    } catch (error) {
+      this.isGoogleLoading = false;
+      console.error('Google login failed:', error);
+      alert('Google login failed. Please try again.');
     }
   }
 }

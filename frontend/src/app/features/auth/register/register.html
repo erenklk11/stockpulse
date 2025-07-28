@@ -7,6 +7,24 @@
   </div>
   <h2>Register</h2>
 
+  <!-- Google OAuth Registration -->
+  <div class="oauth-section">
+    <button
+      type="button"
+      class="google-login-btn"
+      (click)="registerWithGoogle()"
+      [disabled]="isGoogleLoading">
+      <i class="fab fa-google"></i>
+      <span *ngIf="!isGoogleLoading">Sign up with Google</span>
+      <span *ngIf="isGoogleLoading">Connecting...</span>
+    </button>
+  </div>
+
+  <div class="divider">
+    <span>OR</span>
+  </div>
+
+  <!-- Email/Password Registration Form -->
   <form [formGroup]="registerForm" (ngSubmit)="submit()">
 
     <div class="form-group">
@@ -75,7 +93,9 @@
     </div>
 
     <div class="form-group">
-      <button type="submit" class="login-btn">Register</button>
+      <button type="submit" class="login-btn" [disabled]="!registerForm.valid && firstAttemptMade">
+        Register
+      </button>
     </div>
 
     <div class="footer-container">

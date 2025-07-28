@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {AuthService} from '../../../core/auth/auth';
-import {RegisterDTO} from './model/register-dto';
+import {AuthService} from '../../../core/auth/auth-service';
+import {RegisterRequestDto} from './model/register-request-dto';
 import {CommonModule} from '@angular/common';
 import {Router, RouterLink} from '@angular/router';
 
@@ -21,6 +21,7 @@ export class RegisterComponent {
 
   firstAttemptMade : boolean = false;
   showPassword = false;
+  isGoogleLoading = false;
 
 
   registerForm : FormGroup = new FormGroup({
@@ -56,7 +57,7 @@ export class RegisterComponent {
     this.firstAttemptMade = true;
 
     if (this.registerForm.valid) {
-      const registerData: RegisterDTO = {
+      const registerData: RegisterRequestDto = {
         firstName: this.registerForm.get('firstName')?.value?.trim(),
         email: this.registerForm.get('email')?.value?.trim(),
         password: this.registerForm.get('password')?.value?.trim()
@@ -68,7 +69,7 @@ export class RegisterComponent {
           this.registerForm.reset();
           this.firstAttemptMade = false;
 
-          this.router.navigate(['/login'], {
+          this.router.navigate(['/auth/login'], {
             state: {
               registrationData: response,
               message: 'Registration successful! Please log in with your credentials.'
@@ -83,4 +84,14 @@ export class RegisterComponent {
     }
   }
 
+  registerWithGoogle(): void {
+    this.isGoogleLoading = true;
+    try {
+      this.authService.loginWithGoogle();
+    } catch (error) {
+      this.isGoogleLoading = false;
+      console.error('Google registration failed:', error);
+      alert('Google registration failed. Please try again.');
+    }
+  }
 }
