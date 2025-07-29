@@ -61,6 +61,11 @@ public class AuthService {
     }
 
     User user = foundUser.get();
+
+    if (user.getIsOAuthUser() != null && user.getIsOAuthUser()) {
+      throw new InvalidCredentialsException("Please use Google login for this account");
+    }
+
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
       throw new InvalidCredentialsException("Password is incorrect");
     }
@@ -74,3 +79,5 @@ public class AuthService {
             .build();
   }
 }
+
+

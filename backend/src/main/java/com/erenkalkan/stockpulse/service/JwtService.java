@@ -10,6 +10,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -95,6 +96,11 @@ public class JwtService {
     return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
   }
 
+  public boolean isTokenValid(String token) {
+    return !isTokenExpired(token);
+  }
+
+
   public boolean isTokenExpired(String token) {
     return extractExpiration(token).before(new Date());
   }
@@ -109,5 +115,16 @@ public class JwtService {
     }
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(keyBytes);
+  }
+
+  public String extractTokenFromCookies(HttpServletRequest request) {
+    if (request.getCookies() != null) {
+      for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+        if ("auth-token".equals(cookie.getName())) {
+          return cookie.getValue();
+        }
+      }
+    }
+    return null;
   }
 }

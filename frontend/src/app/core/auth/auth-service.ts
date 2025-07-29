@@ -91,11 +91,9 @@ export class AuthService {
   }
 
   private handleAuthenticationSuccess(response: any): void {
-    // Only store non-sensitive data in memory if needed for immediate access
-    if (response.accessToken) {
-      // Don't store the actual token, just mark as authenticated
-      this.isAuthenticatedSubject.next(true);
-    }
+    // For HTTP-only cookies, we don't need to check for accessToken in response
+    // The authentication status is managed by the server via cookies
+    this.isAuthenticatedSubject.next(true);
   }
 
   logout(): void {

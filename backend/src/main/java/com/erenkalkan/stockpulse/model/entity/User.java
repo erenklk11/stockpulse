@@ -46,10 +46,16 @@ public class User implements UserDetails {
   @Column(name="email", unique = true, nullable = false)
   private String email;
 
-  @NotBlank(message = "Password is required")
   @Size(max = 100, message = "Password must not exceed 100 characters")
   @Column(name="password", nullable = false)
   private String password;
+
+  @Column(name = "profile_picture")
+  private String profilePicture;
+
+  @Builder.Default
+  @Column(name = "is_oauth_user", nullable = false)
+  private Boolean isOAuthUser = false;
 
   @NotNull(message = "Role is required")
   @Column(name="role", nullable = false)
