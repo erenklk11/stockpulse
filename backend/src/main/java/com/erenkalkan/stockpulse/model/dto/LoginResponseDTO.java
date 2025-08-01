@@ -5,9 +5,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class LoginResponseDTO {
 
   private String firstName;

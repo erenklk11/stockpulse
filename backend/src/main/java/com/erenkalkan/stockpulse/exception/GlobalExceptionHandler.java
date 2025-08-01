@@ -2,6 +2,7 @@ package com.erenkalkan.stockpulse.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSendException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -100,6 +101,16 @@ public class GlobalExceptionHandler {
                 "An error occurred while processing your request. Please try again later."
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(MailSendException.class)
+    public ResponseEntity<Map<String, Object>> handleMailSendException(MailSendException ex) {
+        Map<String, Object> errorResponse = createErrorResponse(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Email Service Unavailable",
+                "Failed to send email. Please try again later or contact support."
+        );
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

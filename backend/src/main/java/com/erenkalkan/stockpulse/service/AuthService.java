@@ -1,16 +1,14 @@
 package com.erenkalkan.stockpulse.service;
 
-import com.erenkalkan.stockpulse.exception.InvalidCredentialsException;
-import com.erenkalkan.stockpulse.exception.InvalidInputException;
-import com.erenkalkan.stockpulse.exception.UserAlreadyExistsException;
-import com.erenkalkan.stockpulse.exception.UserNotFoundException;
-import com.erenkalkan.stockpulse.model.dto.LoginRequestDTO;
-import com.erenkalkan.stockpulse.model.dto.LoginResponseDTO;
-import com.erenkalkan.stockpulse.model.dto.RegisterRequestDTO;
-import com.erenkalkan.stockpulse.model.dto.RegisterResponseDTO;
+import com.erenkalkan.stockpulse.exception.*;
+import com.erenkalkan.stockpulse.model.dto.*;
 import com.erenkalkan.stockpulse.model.entity.User;
+import com.erenkalkan.stockpulse.model.entity.VerificationToken;
 import com.erenkalkan.stockpulse.model.enums.Role;
+import com.erenkalkan.stockpulse.model.enums.TokenType;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +18,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService {
 
+
   private final PasswordEncoder passwordEncoder;
   private final UserService userService;
   private final JwtService jwtService;
 
-  public RegisterResponseDTO register(RegisterRequestDTO request) {
 
-    if (request == null || request.getEmail() == null || request.getPassword() == null || request.getFirstName() == null) {
-      throw new InvalidInputException("Required fields cannot be null");
-    }
+  public RegisterResponseDTO register(RegisterRequestDTO request) {
 
     if (userService.existsByEmail(request.getEmail())) {
       throw new UserAlreadyExistsException("User with email '" + request.getEmail() + "' already exists");
@@ -50,10 +46,6 @@ public class AuthService {
   }
 
   public LoginResponseDTO login(LoginRequestDTO request) {
-
-    if (request == null || request.getEmail() == null || request.getPassword() == null) {
-      throw new InvalidInputException("Required fields cannot be null");
-    }
 
     Optional<User> foundUser = userService.findByEmail(request.getEmail());
     if (foundUser.isEmpty()) {
@@ -78,6 +70,14 @@ public class AuthService {
             .token(token)
             .build();
   }
+
+  public boolean verifyAuthentication(HttpServletRequest request)  {
+    String token = jwtService.extractTokenFromCookies(request);
+    boolean isAuthenticated = token != null && jwtService.isTokenValid(token);
+    return isAuthenticated;
+  }
+
+
 }
 
 

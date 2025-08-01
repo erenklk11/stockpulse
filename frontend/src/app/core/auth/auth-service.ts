@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environments';
 import { RegisterRequestDto } from '../../features/auth/register/model/register-request-dto';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import {ResetPasswordRequestDto} from '../../features/auth/password/model/reset-password-request-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,7 @@ export class AuthService {
   }
 
   login(loginData: LoginRequestDTO): Observable<any> {
-    return this.http.post<any>(environment.apiUrl + environment.endpoints.login, loginData, {
+    return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.login, loginData, {
       withCredentials: true // Enable HTTP-only cookies
     }).pipe(
       tap((response) => {
@@ -48,13 +49,21 @@ export class AuthService {
   }
 
   register(registerData: RegisterRequestDto): Observable<any> {
-    return this.http.post<any>(environment.apiUrl + environment.endpoints.register, registerData, {
+    return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.register, registerData, {
       withCredentials: true
     });
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post<any>(environment.apiUrl + environment.endpoints.forgotPassword, email);
+    return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.forgotPassword, email);
+  }
+
+  verifyPasswordResetToken(token: string): Observable<boolean> {
+    return this.http.post<boolean>(environment.apiUrl + environment.endpoints.auth.verifyToken, { token });
+  }
+
+  resetPassword(request: ResetPasswordRequestDto) : Observable<boolean> {
+    return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.resetPassword, {request});
   }
 
   // Google OAuth2 methods
@@ -77,7 +86,7 @@ export class AuthService {
     const code = urlParams.get('code');
 
     if (code) {
-      return this.http.post<any>(environment.apiUrl + environment.endpoints.googleAuth, {
+      return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.googleAuth, {
         code: code
       }, {
         withCredentials: true // Enable HTTP-only cookies
@@ -101,7 +110,7 @@ export class AuthService {
     this.accessToken = null;
 
     // Call logout endpoint to clear HTTP-only cookies
-    this.http.post(environment.apiUrl + '/api/auth/logout', {}, {
+    this.http.post(environment.apiUrl + environment.endpoints.auth.logout, {}, {
       withCredentials: true
     }).subscribe({
       next: () => {
@@ -148,11 +157,11 @@ export class AuthService {
   // Check authentication status on app initialization
   private checkAuthenticationStatus(): void {
     // Make a request to verify if user is authenticated via HTTP-only cookies
-    this.http.get(environment.apiUrl + '/api/auth/verify', {
+    this.http.get(environment.apiUrl + environment.endpoints.auth.verify, {
       withCredentials: true
     }).subscribe({
       next: (response: any) => {
-        if (response.authenticated) {
+        if (response) {
           this.isAuthenticatedSubject.next(true);
         }
       },
