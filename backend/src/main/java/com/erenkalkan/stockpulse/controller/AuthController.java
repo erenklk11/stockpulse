@@ -63,7 +63,7 @@ public class AuthController {
   }
 
   private Cookie clearCookie() {
-    Cookie cookie = new Cookie("auth-token", null);
+    Cookie cookie = new Cookie("auth-token", "");
     cookie.setHttpOnly(true);
     cookie.setSecure(true);
     cookie.setPath("/");

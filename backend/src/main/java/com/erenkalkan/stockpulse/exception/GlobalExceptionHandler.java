@@ -3,6 +3,8 @@ package com.erenkalkan.stockpulse.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSendException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -111,6 +113,26 @@ public class GlobalExceptionHandler {
                 "Failed to send email. Please try again later or contact support."
         );
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        Map<String, Object> errorResponse = createErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Missing Request Parameter",
+                "Required parameter '" + ex.getParameterName() + "' of type '" + ex.getParameterType() + "' is missing"
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, Object> errorResponse = createErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Failed",
+                "Invalid request data"
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

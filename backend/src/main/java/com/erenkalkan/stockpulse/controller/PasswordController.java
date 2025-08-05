@@ -1,7 +1,6 @@
 package com.erenkalkan.stockpulse.controller;
 
 import com.erenkalkan.stockpulse.model.dto.ResetPasswordRequestDTO;
-import com.erenkalkan.stockpulse.model.entity.VerificationToken;
 import com.erenkalkan.stockpulse.service.VerificationTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

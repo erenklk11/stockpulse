@@ -36,7 +36,7 @@ public class VerificationTokenService {
 
   public boolean sendForgotPasswordEmail(String email) {
 
-    if (email == null) {
+    if (email == null || email.trim().isEmpty()) {
       throw new InvalidInputException("Email cannot be null");
     }
 
@@ -78,7 +78,7 @@ public class VerificationTokenService {
 
   public boolean verifyToken(String token) {
 
-    if (token == null) {
+    if (token == null || token.trim().isEmpty()) {
       throw new InvalidJwtTokenException("Authentication token is required");
     }
 
