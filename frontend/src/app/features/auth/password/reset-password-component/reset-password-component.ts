@@ -18,7 +18,7 @@ export class ResetPasswordComponent implements OnInit {
   isTokenValid = false;
   isSuccess = false;
   errorMessage = '';
-  response = '';
+  responseMessage = '';
   token = '';
 
   private static readonly MIN_PASSWORD_LENGTH = 8;
@@ -50,11 +50,11 @@ export class ResetPasswordComponent implements OnInit {
   private verifyToken(): void {
     this.isLoading = true;
     this.authService.verifyPasswordResetToken(this.token).subscribe({
-      next: (isValid: boolean) => {
+      next: (response: any) => {
         this.isLoading = false;
-        this.isTokenValid = isValid;
-        if (!isValid) {
-          this.handleError('Invalid or expired token');
+        if (response.tokenVerified) {
+          this.isSuccess = true;
+          this.responseMessage
         }
       },
       error: (error) => {
@@ -72,15 +72,15 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     this.authService.resetPassword(request).subscribe({
-      next: (success : boolean) => {
-        if (success) {
+      next: (response: any) => {
+        if (response.passwordReset) {
           this.isSuccess = true;
-          this.response = "Password Reset successful."
+          this.responseMessage = "Password Reset successful."
         }
       },
       error: (err)=> {
         console.log(err);
-        this.response = err.message;
+        this.errorMessage = err.message;
     }
     });
   }
@@ -93,10 +93,6 @@ export class ResetPasswordComponent implements OnInit {
 
   get passwordMinLength(): number {
     return ResetPasswordComponent.MIN_PASSWORD_LENGTH;
-  }
-
-  get responseMessage() : string {
-    return this.response;
   }
 
   get responseClass() : string {

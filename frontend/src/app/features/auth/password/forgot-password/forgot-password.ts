@@ -34,17 +34,19 @@ export class ForgotPasswordComponent {
   submit() : void {
     this.firstAttemptMade = true;
 
-    if(this.formGroup.valid) {
+    if (this.formGroup.valid) {
       var email = this.formGroup.controls['email'].value.toString().trim();
       this.authService.forgotPassword(email).subscribe({
         next: (response) => {
-          if(response.mailSent) {
+          if (response.mailSent) {
+            console.log(response);
             this.isSuccess = true;
-            this.responseMessage = 'Reset password mail has been sent to:' + email;
+            this.responseMessage = 'Reset password mail has been sent to: ' + email;
           }
         },
         error: (err) => {
           console.log(err);
+          this.isSuccess = false;
           this.responseMessage = err.message;
         }
       });

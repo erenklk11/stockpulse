@@ -74,8 +74,8 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/dashboard']); // Navigate to main app
         },
         error: (error) => {
-          alert("Login failed!" + error);
-          console.error('Login failed:', error);
+          alert("Login failed!" + error.message);
+          console.error('Login failed:', error.message);
         }
       });
     }

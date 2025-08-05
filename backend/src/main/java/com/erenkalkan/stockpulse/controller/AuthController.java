@@ -38,8 +38,10 @@ public class AuthController {
   }
 
   @PostMapping("/verify")
-  public ResponseEntity<Boolean> verifyAuthentication(HttpServletRequest request) {
-    return ResponseEntity.ok(authService.verifyAuthentication(request));
+  public ResponseEntity<Map<String, Boolean>> verifyAuthentication(HttpServletRequest request) {
+    Map<String, Boolean> response = new HashMap<>();
+    response.put("verified", authService.verifyAuthentication(request));
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping("/logout")

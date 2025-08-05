@@ -77,7 +77,7 @@ export class RegisterComponent {
           });
         },
         error: (error) => {
-          alert("Registration failed!")
+          alert("Registration failed!" + error.message)
           console.log(error);
         }
       });

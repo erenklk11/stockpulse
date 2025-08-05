@@ -7,12 +7,14 @@ import com.erenkalkan.stockpulse.model.entity.VerificationToken;
 import com.erenkalkan.stockpulse.model.enums.TokenType;
 import com.erenkalkan.stockpulse.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VerificationTokenService {
@@ -46,6 +48,11 @@ public class VerificationTokenService {
     }
     User user = foundUser.get();
 
+    Optional<VerificationToken> existingToken = verificationTokenRepository.findByUser(user);
+    if (existingToken.isPresent()) {
+      verificationTokenRepository.delete(existingToken.get());
+    }
+
     VerificationToken token = VerificationToken.builder()
             .tokenType(TokenType.PASSWORD_RESET)
             .user(user)
@@ -57,6 +64,7 @@ public class VerificationTokenService {
 
     this.save(token);
 
+    log.info("Email has been sent");
     return true;
   }
 

@@ -1,5 +1,6 @@
 package com.erenkalkan.stockpulse.repository;
 
+import com.erenkalkan.stockpulse.model.entity.User;
 import com.erenkalkan.stockpulse.model.entity.VerificationToken;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import java.util.Optional;
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {
 
   Optional<VerificationToken> findByToken(String token);
+
+  Optional<VerificationToken> findByUser(User user);
 }

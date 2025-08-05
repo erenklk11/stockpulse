@@ -5,13 +5,12 @@ import com.erenkalkan.stockpulse.service.VerificationTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/password")
 public class PasswordController {
@@ -19,17 +18,23 @@ public class PasswordController {
   private final VerificationTokenService tokenService;
 
   @PostMapping("/forgot")
-  public ResponseEntity<Boolean> forgotPassword(@RequestBody String email) {
-    return ResponseEntity.ok(tokenService.sendForgotPasswordEmail(email));
+  public ResponseEntity<Map<String, Boolean>> forgotPassword(@RequestBody String email) {
+    Map<String, Boolean> response = new HashMap<>();
+    response.put("mailSent", tokenService.sendForgotPasswordEmail(email));
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping("/reset")
-  public ResponseEntity<Boolean> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO request) {
-    return ResponseEntity.ok(tokenService.resetPassword(request));
+  public ResponseEntity<Map<String, Boolean>> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO request) {
+    Map<String, Boolean> response = new HashMap<>();
+    response.put("passwordReset", tokenService.resetPassword(request));
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping("/verify")
-  public ResponseEntity<Boolean> verifyToken(@RequestParam String token) {
-    return ResponseEntity.ok(tokenService.verifyToken(token));
+  public ResponseEntity<Map<String, Boolean>> verifyToken(@RequestParam String token) {
+    Map<String, Boolean> response = new HashMap<>();
+    response.put("tokenVerified", tokenService.verifyToken(token));
+    return ResponseEntity.ok(response);
   }
 }

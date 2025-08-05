@@ -157,11 +157,11 @@ export class AuthService {
   // Check authentication status on app initialization
   private checkAuthenticationStatus(): void {
     // Make a request to verify if user is authenticated via HTTP-only cookies
-    this.http.get(environment.apiUrl + environment.endpoints.auth.verify, {
+    this.http.post(environment.apiUrl + environment.endpoints.auth.verify, {
       withCredentials: true
     }).subscribe({
       next: (response: any) => {
-        if (response) {
+        if (response.verified) {
           this.isAuthenticatedSubject.next(true);
         }
       },
