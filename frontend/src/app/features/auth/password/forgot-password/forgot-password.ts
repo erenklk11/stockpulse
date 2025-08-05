@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../../../core/auth/auth-service';
 import {CommonModule} from '@angular/common';
@@ -29,7 +29,7 @@ export class ForgotPasswordComponent {
     return this.isSuccess ? 'success-message' : 'error-message';
   }
 
-  constructor(private authService : AuthService) {}
+  constructor(private authService : AuthService, private cdr: ChangeDetectorRef) {}
 
   submit() : void {
     this.firstAttemptMade = true;
@@ -37,11 +37,12 @@ export class ForgotPasswordComponent {
     if (this.formGroup.valid) {
       var email = this.formGroup.controls['email'].value.toString().trim();
       this.authService.forgotPassword(email).subscribe({
-        next: (response) => {
+        next: (response) : any => {
           if (response.mailSent) {
             console.log(response);
             this.isSuccess = true;
             this.responseMessage = 'Reset password mail has been sent to: ' + email;
+            this.cdr.detectChanges();
           }
         },
         error: (err) => {

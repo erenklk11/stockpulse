@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , ChangeDetectorRef} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { CommonModule } from '@angular/common';
@@ -33,7 +33,8 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +55,6 @@ export class ResetPasswordComponent implements OnInit {
         this.isLoading = false;
         if (response.tokenVerified) {
           this.isSuccess = true;
-          this.responseMessage
         }
       },
       error: (error) => {
@@ -76,6 +76,7 @@ export class ResetPasswordComponent implements OnInit {
         if (response.passwordReset) {
           this.isSuccess = true;
           this.responseMessage = "Password Reset successful."
+          this.cdr.detectChanges();
         }
       },
       error: (err)=> {
