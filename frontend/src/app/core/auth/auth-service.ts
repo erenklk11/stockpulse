@@ -27,6 +27,8 @@ export class AuthService {
     responseType: 'code',
     oidc: true,
     strictDiscoveryDocumentValidation: false,
+    disablePKCE: false, // Enable PKCE
+    showDebugInformation: true, // Enable for debugging
   };
 
   constructor(
@@ -86,8 +88,14 @@ export class AuthService {
     const code = urlParams.get('code');
 
     if (code) {
+      // Get the code verifier from localStorage (where angular-oauth2-oidc stores it)
+      const codeVerifier = localStorage.getItem('PKCE_verifier') ||
+                          sessionStorage.getItem('PKCE_verifier') ||
+                          (this.oauthService as any).pkceCodeVerifier;
+
       return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.googleAuth, {
-        code: code
+        code: code,
+        codeVerifier: codeVerifier
       }, {
         withCredentials: true // Enable HTTP-only cookies
       }).pipe(

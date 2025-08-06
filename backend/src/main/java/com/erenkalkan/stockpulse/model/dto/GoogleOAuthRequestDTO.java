@@ -16,4 +16,5 @@ public class GoogleOAuthRequestDTO {
     @NotNull
     @NotBlank(message = "Authorization code is required")
     private String code;
+    private String codeVerifier;
 }

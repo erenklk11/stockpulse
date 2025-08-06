@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,7 +39,7 @@ public class OAuthController {
         try {
             log.info("Processing Google OAuth authentication for authorization code");
 
-            LoginResponseDTO loginResponse = googleOAuthService.authenticateWithGoogle(request.getCode());
+            LoginResponseDTO loginResponse = googleOAuthService.authenticateWithGoogle(request.getCode(), request.getCodeVerifier());
             setJwtCookie(response, loginResponse.getToken());
             loginResponse.setToken(null);
 
@@ -48,12 +49,7 @@ public class OAuthController {
 
         } catch (Exception e) {
             log.error("Google OAuth authentication failed", e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(LoginResponseDTO.builder()
-                            .firstName(null)
-                            .email(null)
-                            .token(null)
-                            .build());
+            throw new OAuth2AuthenticationException("Google OAuth authentication failed");
         }
     }
 

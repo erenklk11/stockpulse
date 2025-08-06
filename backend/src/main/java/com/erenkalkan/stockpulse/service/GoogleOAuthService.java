@@ -37,10 +37,10 @@ public class GoogleOAuthService {
     @Value("${google.oauth.redirect-uri}")
     private String redirectUri;
 
-    public LoginResponseDTO authenticateWithGoogle(String authorizationCode) {
+    public LoginResponseDTO authenticateWithGoogle(String authorizationCode, String codeVerifier) {
         try {
-            // Exchange authorization code for tokens
-            GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(
+            // Exchange authorization code for tokens with PKCE support
+            GoogleAuthorizationCodeTokenRequest tokenRequest = new GoogleAuthorizationCodeTokenRequest(
                     new NetHttpTransport(),
                     GsonFactory.getDefaultInstance(),
                     "https://oauth2.googleapis.com/token",
@@ -48,7 +48,14 @@ public class GoogleOAuthService {
                     clientSecret,
                     authorizationCode,
                     redirectUri
-            ).execute();
+            );
+
+            // Add code verifier for PKCE if provided
+            if (codeVerifier != null && !codeVerifier.isEmpty()) {
+                tokenRequest.set("code_verifier", codeVerifier);
+            }
+
+            GoogleTokenResponse tokenResponse = tokenRequest.execute();
 
             // Verify and extract user info from ID token
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
