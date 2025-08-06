@@ -42,16 +42,8 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    // Check if we received registration data from router state
-    const state = window.history.state;
-    if (state && state.registrationData) {
-      this.registrationData = state.registrationData;
-      this.registrationMessage = state.message;
-
-      if (this.registrationData?.email) {
-        this.loginForm.get('email')?.setValue(this.registrationData.email);
-      }
-    }
+      this.registrationMessage = sessionStorage["message"];
+      this.loginForm.get('email')?.setValue(sessionStorage["email"]);
   }
 
   togglePasswordVisibility() {
@@ -71,10 +63,10 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           // No need to manually store tokens - they're in HTTP-only cookies
           alert("Login successful!");
-          this.router.navigate(['/dashboard']); // Navigate to main app
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          alert("Login failed!" + error.message);
+          alert("Login failed! " + error.message);
           console.error('Login failed:', error.message);
         }
       });

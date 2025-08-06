@@ -218,10 +218,10 @@ label {
   border: 1px solid #c3e6cb;
   color: #155724;
   padding: 12px;
+  margin-bottom: 16px;
   border-radius: 4px;
-  margin-bottom: 20px;
   font-size: 14px;
-  text-align: center;
+  white-space: pre-line; /* This preserves newlines and wraps text */
 }
 
 .footer-container {

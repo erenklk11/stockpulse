@@ -69,12 +69,9 @@ export class RegisterComponent {
           this.registerForm.reset();
           this.firstAttemptMade = false;
 
-          this.router.navigate(['/auth/login'], {
-            state: {
-              registrationData: response,
-              message: 'Registration successful! Please log in with your credentials.'
-            }
-          });
+          sessionStorage.setItem("message", "Registration successful with email: " + response.email+ " \nPlease log in with your credentials.");
+          sessionStorage.setItem("email", response.email)
+          this.router.navigate(['/auth/login']);
         },
         error: (error) => {
           alert("Registration failed!" + error.message)
