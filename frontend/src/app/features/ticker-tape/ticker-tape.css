@@ -1,0 +1,28 @@
+.tradingview-widget-container {
+  width: 100vw;
+  height: 75px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  transform-origin: top left;
+  z-index: 998;
+}
+
+.tradingview-widget-container__widget {
+  width: 100%;
+  height: 100%;
+}
+
+.tradingview-widget-copyright {
+  font-size: 13px !important;
+  line-height: 32px;
+  text-align: center;
+  vertical-align: middle;
+  font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif;
+  color: #9db2bd !important;
+}
