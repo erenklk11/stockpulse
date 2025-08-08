@@ -63,6 +63,8 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           // No need to manually store tokens - they're in HTTP-only cookies
           alert("Login successful!");
+          sessionStorage.setItem("firstName", response.firstName);
+          sessionStorage.setItem("email", response.email);
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {

@@ -1,0 +1,129 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 24px;
+  background-color: #839197;
+  border-bottom: 1px solid #dadce0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.welcome-section p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.logo-section img {
+  display: block;
+}
+
+.icons-section {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.icon-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.icon-button:hover:not(:disabled) {
+  background-color: rgba(20, 99, 245, 0.1);
+  color: #1463f5;
+}
+
+.icon-button:active {
+  transform: scale(0.95);
+}
+
+.icon-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 2px solid #fff;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0px 20px;
+    width: 100%;
+  }
+
+  .welcome-section p {
+    font-size: 13px;
+  }
+
+  .icons-section {
+    gap: 6px;
+  }
+
+  .icon-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .notification-badge {
+    font-size: 10px;
+    min-width: 14px;
+    height: 14px;
+    border-radius: 7px;
+  }
+}
