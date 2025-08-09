@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
           alert("Login successful!");
           sessionStorage.setItem("firstName", response.firstName);
           sessionStorage.setItem("email", response.email);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/home']);
         },
         error: (error) => {
           alert("Login failed! " + error.message);

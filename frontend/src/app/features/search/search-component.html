@@ -1,0 +1,23 @@
+<label for="stock-ticker">Search Stock</label>
+<input
+  id="stock-ticker"
+  name="stockTicker"
+  placeholder="Enter stock ticker (ex. AAPL)"
+  [(ngModel)]="stockInput"
+  (input)="getBestMatches()"
+>
+
+<!-- Loading indicator -->
+<div class="loading" *ngIf="isLoading">
+  <div class="loading-spinner"></div>
+  <span>Searching...</span>
+</div>
+
+<!-- Search Results -->
+<div class="search-results" *ngIf="results.length > 0 && !isLoading">
+  <h3>Search Results</h3>
+  <div class="result-item" *ngFor="let result of results">
+    <div class="symbol">{{ result.symbol }}</div>
+    <div class="name">{{ result.name }}</div>
+  </div>
+</div>

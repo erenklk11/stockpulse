@@ -1,0 +1,27 @@
+.ticker-tape-section {
+  position: fixed;
+  top: 43px;
+  left: 0;
+  width: 100%;
+}
+
+.main-content {
+  margin-top: 150px; /* Account for header (~43px) + ticker tape height + some spacing */
+  padding: 40px;
+}
+
+.main-content h2 {
+  display: inline-block;
+  margin-right: 100px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Search container positioned on the right */
+.search-container {
+  float: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: -20px; /* Align with h2 elements */
+}

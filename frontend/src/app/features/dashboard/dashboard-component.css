@@ -1,0 +1,83 @@
+.company-buttons-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding: 20px;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.company-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  min-height: 32px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.company-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #007bff;
+}
+
+.company-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.company-logo {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.company-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Individual company button styling */
+.company-button.nvidia:hover {
+  border-color: #76B900;
+  background-color: #f8fcf4;
+}
+
+.company-button.microsoft:hover {
+  border-color: #b81717;
+  background-color: #f3f9ff;
+}
+
+.company-button.apple:hover {
+  border-color: #9fa9b6;
+  background-color: #f3f9ff;
+}
+
+.company-button.google:hover {
+  border-color: #f6c661;
+  background-color: #f3f9ff;
+}
+
+.company-button.amazon:hover {
+  border-color: #FF9900;
+  background-color: #fff9f3;
+}
+
+.company-button.meta:hover {
+  border-color: #1877F2;
+  background-color: #f3f9ff;
+}
