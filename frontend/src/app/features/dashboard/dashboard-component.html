@@ -1,32 +1,44 @@
-<div class="company-buttons-container">
-  <button class="company-button nvidia">
-    <img src="https://logo.clearbit.com/nvidia.com" alt="NVIDIA logo" class="company-logo">
-    <span class="company-name">NVIDIA</span>
-  </button>
+<div class="dashboard-right-section">
+  <div class="company-buttons-container">
+    <button (click)="selectNvidia()" class="company-button nvidia">
+      <img src="https://logo.clearbit.com/nvidia.com" alt="NVIDIA logo" class="company-logo">
+      <span class="company-name">NVIDIA</span>
+    </button>
 
-  <button class="company-button microsoft">
-    <img src="https://logo.clearbit.com/microsoft.com" alt="Microsoft logo" class="company-logo">
-    <span class="company-name">Microsoft</span>
-  </button>
+    <button (click)="selectMicrosoft()" class="company-button microsoft">
+      <img src="https://logo.clearbit.com/microsoft.com" alt="Microsoft logo" class="company-logo">
+      <span class="company-name">Microsoft</span>
+    </button>
 
-  <button class="company-button apple">
-    <img src="https://logo.clearbit.com/apple.com" alt="Apple logo" class="company-logo">
-    <span class="company-name">Apple</span>
-  </button>
+    <button (click)="selectApple()" class="company-button apple">
+      <img src="https://logo.clearbit.com/apple.com" alt="Apple logo" class="company-logo">
+      <span class="company-name">Apple</span>
+    </button>
 
-  <button class="company-button google">
-    <img src="https://logo.clearbit.com/google.com" alt="Google logo" class="company-logo">
-    <span class="company-name">Google</span>
-  </button>
+    <button (click)="selectGoogle()" class="company-button google">
+      <img src="https://logo.clearbit.com/google.com" alt="Google logo" class="company-logo">
+      <span class="company-name">Google</span>
+    </button>
 
-  <button class="company-button amazon">
-    <img src="https://logo.clearbit.com/amazon.com" alt="Amazon logo" class="company-logo">
-    <span class="company-name">Amazon</span>
-  </button>
+    <button (click)="selectAmazon()" class="company-button amazon">
+      <img src="https://logo.clearbit.com/amazon.com" alt="Amazon logo" class="company-logo">
+      <span class="company-name">Amazon</span>
+    </button>
 
-  <button class="company-button meta">
-    <img src="https://logo.clearbit.com/meta.com" alt="Meta logo" class="company-logo">
-    <span class="company-name">Meta</span>
-  </button>
+    <button (click)="selectMeta()" class="company-button meta">
+      <img src="https://logo.clearbit.com/meta.com" alt="Meta logo" class="company-logo">
+      <span class="company-name">Meta</span>
+    </button>
+  </div>
+
+  <!-- TradingView Widget BEGIN -->
+  <div class="tradingview-chart-widget-container">
+    <div class="tradingview-chart-widget-container__widget"></div>
+    <div class="tradingview-widget-copyright">
+      <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
+        <span class="blue-text">Chart by TradingView</span>
+      </a>
+    </div>
+  </div>
+  <!-- TradingView Widget END -->
 </div>
-

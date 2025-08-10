@@ -3,10 +3,30 @@
   <app-ticker-tape></app-ticker-tape>
 </div>
 <div class="main-content">
-  <h2>DashboardComponent</h2>
-  <app-dashboard-component></app-dashboard-component>
-  <h2>Wishlist</h2>
-  <div class="search-container">
-    <app-search-component></app-search-component>
+  <div class="top-section">
+    <div class="section-navigation">
+      <h2
+        class="nav-header"
+        [class.active]="dashboardSelected"
+        (click)="selectDashboard()">
+        Dashboard
+      </h2>
+      <h2
+        class="nav-header"
+        [class.active]="!dashboardSelected"
+        (click)="selectWishlist()">
+        Wishlist
+      </h2>
+    </div>
+    <div class="search-container">
+      <app-search-component></app-search-component>
+    </div>
+  </div>
+
+  <div *ngIf="dashboardSelected" class="dashboard-section">
+    <app-dashboard-component></app-dashboard-component>
+  </div>
+  <div *ngIf="!dashboardSelected" class="wishlist-section">
+    <app-wishlist-component></app-wishlist-component>
   </div>
 </div>

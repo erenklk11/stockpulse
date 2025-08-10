@@ -3,17 +3,29 @@ import { HeaderComponent } from '../../../shared/header-component/header-compone
 import { TickerTape } from '../../ticker-tape/ticker-tape';
 import {SearchComponent} from '../../search/search-component';
 import {DashboardComponent} from '../../dashboard/dashboard-component';
+import {WishlistComponent} from '../../wishlist/wishlist-component';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-home-page-component',
-  imports: [HeaderComponent, TickerTape, SearchComponent, DashboardComponent],
+  imports: [HeaderComponent, TickerTape, SearchComponent, DashboardComponent, WishlistComponent, CommonModule],
   templateUrl: './home-page-component.html',
   styleUrl: './home-page-component.css'
 })
 export class HomePageComponent {
 
+  dashboardSelected: boolean = true;
+
   getFirstName(): string {
     return sessionStorage.getItem("firstName") || "";
+  }
+
+  selectDashboard(): void {
+    this.dashboardSelected = true;
+  }
+
+  selectWishlist(): void {
+    this.dashboardSelected = false;
   }
 
 }
