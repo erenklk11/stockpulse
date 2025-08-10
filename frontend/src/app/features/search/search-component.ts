@@ -40,26 +40,31 @@ export class SearchComponent {
 
     // Set a new timeout for 2 seconds
     this.searchTimeout = setTimeout(() => {
-      var apiUrl = environment.api.alphaVantage.url +
-        `function=SYMBOL_SEARCH&keywords=${this.stockInput}&apikey=${environment.api.alphaVantage.key}`;
 
-      this.http.get<any>(apiUrl).subscribe({
+      this.http.get<any>(environment.apiUrl + environment.endpoints.api.search + `?input=${this.stockInput}`, {
+        withCredentials: true // Include HTTP-only cookies for authentication
+      }).subscribe({
         next: (response) => {
           this.isLoading = false;
-          if (response.bestMatches && Array.isArray(response.bestMatches)) {
-            // Only showing the first 5 results since rest would be irrelevant for the user
-            this.results = response.bestMatches.slice(0, 5).map((match: any) => ({
-              symbol: match['1. symbol'],
-              name: match['2. name']
-            }));
+          if (response && response.length > 0) {
+            this.results = response;
           }
           else {
-            alert("External API limit has unfortunately been reached");
+            this.results = [];
+            if (response && response.length === 0) {
+              console.log('No search results found');
+            } else {
+              alert("External API limit has unfortunately been reached");
+            }
           }
         },
-        error: () => {
+        error: (error) => {
           this.isLoading = false;
-          console.error('Error fetching search results');
+          if (error.status === 403 || error.status === 401) {
+            alert("Please log in to search for stocks");
+          } else {
+            console.error('Error fetching search results');
+          }
         }
       });
     }, 2000);
