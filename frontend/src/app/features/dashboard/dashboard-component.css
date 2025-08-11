@@ -1,3 +1,12 @@
+/* Dashboard Container - Main flex layout */
+.dashboard-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  align-items: flex-start;
+}
+
 .company-buttons-container {
   display: flex;
   flex-wrap: nowrap;
@@ -82,16 +91,20 @@
   border-color: #1877F2;
   background-color: #f3f9ff;
 }
+/* Dashboard Left Section - Table */
+.dashboard-left-section {
+  flex: 1;
+  max-width: 800px;
+}
 
 /* Dashboard Right Section - positions both buttons and chart to the right */
 .dashboard-right-section {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-left: auto;
   max-width: 500px;
-  width: 100%;
-  padding-right: 20px;
+  width: 500px;
+  flex-shrink: 0;
 }
 
 /* TradingView Chart Widget Styling */

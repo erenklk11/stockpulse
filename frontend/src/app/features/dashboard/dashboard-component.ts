@@ -1,9 +1,11 @@
 import { Component, AfterViewInit } from '@angular/core';
+import {StocksTableComponent} from './stocks-table/stocks-table-component';
 
 @Component({
   selector: 'app-dashboard-component',
-  imports: [],
+  imports: [StocksTableComponent],
   templateUrl: './dashboard-component.html',
+  standalone: true,
   styleUrl: './dashboard-component.css'
 })
 export class DashboardComponent implements AfterViewInit {

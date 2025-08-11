@@ -1,0 +1,96 @@
+.company-table-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+}
+
+.table-title {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333333;
+  font-family: 'Arial', sans-serif;
+}
+
+.company-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Arial', sans-serif;
+}
+
+.company-table th {
+  background-color: #f8f9fa;
+  padding: 12px 8px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555555;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.company-table td {
+  padding: 12px 8px;
+  font-size: 14px;
+  color: #333333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table-row:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+.company-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.ticker-cell {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.price-cell, .change-cell, .market-cap-cell {
+  font-weight: 500;
+  text-align: right;
+}
+
+.industry-cell {
+  color: #666666;
+  font-size: 13px;
+}
+
+/* Company row specific hover effects */
+.nvidia-row:hover {
+  background-color: #f8fcf4;
+}
+
+.microsoft-row:hover {
+  background-color: #f3f9ff;
+}
+
+.apple-row:hover {
+  background-color: #f3f9ff;
+}
+
+.google-row:hover {
+  background-color: #f3f9ff;
+}
+
+.amazon-row:hover {
+  background-color: #fff9f3;
+}
+
+.meta-row:hover {
+  background-color: #f3f9ff;
+}
