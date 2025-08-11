@@ -41,7 +41,7 @@ export class SearchComponent {
     // Set a new timeout for 2 seconds
     this.searchTimeout = setTimeout(() => {
 
-      this.http.get<any>(environment.apiUrl + environment.endpoints.api.search + `?input=${this.stockInput}`, {
+      this.http.get<any>(environment.apiUrl + environment.endpoints.api.search + `?input=${this.stockInput.trim()}`, {
         withCredentials: true // Include HTTP-only cookies for authentication
       }).subscribe({
         next: (response) => {
@@ -60,10 +60,10 @@ export class SearchComponent {
         },
         error: (error) => {
           this.isLoading = false;
-          if (error.status === 403 || error.status === 401) {
-            alert("Please log in to search for stocks");
+          if (error.error && error.message) {
+            alert(error.message);
           } else {
-            console.error('Error fetching search results');
+            console.error('Error fetching search results: ' + error);
           }
         }
       });

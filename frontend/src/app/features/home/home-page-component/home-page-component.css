@@ -70,6 +70,12 @@
   animation: fadeIn 0.3s ease-in;
 }
 
+.news-section {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid #e9ecef;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

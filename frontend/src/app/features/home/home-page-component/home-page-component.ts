@@ -5,10 +5,11 @@ import {SearchComponent} from '../../search/search-component';
 import {DashboardComponent} from '../../dashboard/dashboard-component';
 import {WishlistComponent} from '../../wishlist/wishlist-component';
 import {CommonModule} from '@angular/common';
+import {NewsComponent} from '../../news/news-component';
 
 @Component({
   selector: 'app-home-page-component',
-  imports: [HeaderComponent, TickerTape, SearchComponent, DashboardComponent, WishlistComponent, CommonModule],
+  imports: [HeaderComponent, TickerTape, SearchComponent, DashboardComponent, WishlistComponent, CommonModule, NewsComponent],
   templateUrl: './home-page-component.html',
   styleUrl: './home-page-component.css'
 })

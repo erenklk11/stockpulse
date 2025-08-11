@@ -1,1 +1,17 @@
-<p>news-component works!</p>
+<div class="news-container">
+
+  <div class="news-grid" *ngIf="results.length > 0">
+    <div class="news-card" *ngFor="let article of results; let i = index" (click)="openArticle(article.articleUrl)">
+      <div class="news-image">
+        <img [src]="article.imageUrl" [alt]="article.headline" (error)="onImageError($event)">
+      </div>
+      <div class="news-content">
+        <h3 class="news-headline">{{ article.headline }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-news" *ngIf="results.length === 0">
+    <p>No news articles available at the moment.</p>
+  </div>
+</div>

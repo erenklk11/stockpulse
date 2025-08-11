@@ -153,7 +153,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> errorResponse = createErrorResponse(
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
                 "External Service Error",
-                "Failed to communicate with external service. Please try again later."
+                ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
     }
