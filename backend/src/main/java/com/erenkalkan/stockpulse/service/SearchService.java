@@ -29,7 +29,7 @@ public class SearchService {
     if (input == null || input.trim().isEmpty()) {
       throw new InvalidInputException("Input cannot be null or empty");
     }
-    String apiUrl = url + "function=SYMBOL_SEARCH&keywords=" + input + "&apikey=" + key;
+    String apiUrl = url + "?function=SYMBOL_SEARCH&keywords=" + input + "&apikey=" + key;
 
     try {
       Map<String, Object> response = restClient.get()

@@ -7,16 +7,18 @@
 }
 
 .main-content {
-  margin-top: 150px; /* Account for header (~43px) + ticker tape height + some spacing */
+  margin-top: 190px; /* Account for header (~43px) + ticker tape height + some spacing */
   padding: 40px;
 }
 
 /* Top section container for navigation and search */
 .top-section {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
   margin-bottom: 30px;
+  width: 100%; /* Make top-section span the full width */
+  position: relative;
 }
 
 /* Navigation headers */
@@ -62,6 +64,11 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  position: absolute;
+  right: 0;
+  top: -50px; /* Keep the 20px higher offset */
+  width: auto;
+  margin: 0;
 }
 
 /* Section containers */

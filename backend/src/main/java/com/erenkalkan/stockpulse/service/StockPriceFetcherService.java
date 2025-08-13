@@ -66,6 +66,9 @@ public class StockPriceFetcherService {
         log.error("Error adding symbols", e);
       }
     }
+    else {
+      log.warn("Session has problems");
+    }
   }
 
   public void removeSymbols(List<String> symbols) {
