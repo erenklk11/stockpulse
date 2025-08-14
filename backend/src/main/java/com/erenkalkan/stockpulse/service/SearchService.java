@@ -3,6 +3,7 @@ package com.erenkalkan.stockpulse.service;
 import com.erenkalkan.stockpulse.exception.InvalidInputException;
 import com.erenkalkan.stockpulse.model.dto.SearchTickerResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SearchService {
@@ -52,6 +54,7 @@ public class SearchService {
         return processedResults;
       } else {
         // Return empty result if no bestMatches found (API limit reached or other issues)
+        log.error("Returning 0 search results");
         return List.of();
       }
     } catch (Exception e) {

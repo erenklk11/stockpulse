@@ -1,8 +1,7 @@
 export interface StockData {
   symbol: string,
   name: string,
-  price?: number,
-  dailyChange?: number,
-  marketCap?: number,
+  exchange?: string,
+  marketCap?: string,
   industry?: string
 }

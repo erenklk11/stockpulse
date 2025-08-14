@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockPriceDTO {
-  private String symbol;
-  private double price;
-  private long timestamp;
+public class StockDataDTO {
+
+  private String marketCap;
+  private String exchange;
+  private String industry;
 }

@@ -1,6 +1,6 @@
 package com.erenkalkan.stockpulse.service.websocket;
 
-import com.erenkalkan.stockpulse.service.StockPriceFetcherService;
+import com.erenkalkan.stockpulse.service.StockWebSocketService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class StockPriceWebSocketHandler extends TextWebSocketHandler {
 
   private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
-  private final StockPriceFetcherService stockPriceFetcherService;
+  private final StockWebSocketService stockWebSocketService;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
@@ -117,7 +117,7 @@ public class StockPriceWebSocketHandler extends TextWebSocketHandler {
         return;
       }
 
-      stockPriceFetcherService.addSymbols(validSymbols);
+      stockWebSocketService.addSymbols(validSymbols);
 
       String response = String.format(
               "{\"type\":\"subscribed\",\"symbols\":%s,\"message\":\"Successfully subscribed to symbols\"}",

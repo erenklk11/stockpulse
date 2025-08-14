@@ -1,7 +1,9 @@
 package com.erenkalkan.stockpulse.service;
 
+import com.erenkalkan.stockpulse.exception.InvalidInputException;
 import com.erenkalkan.stockpulse.model.dto.NewsResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NewsService {
@@ -34,6 +37,10 @@ public class NewsService {
 
 
   public List<NewsResponseDTO> getCompanyNews(String ticker) {
+
+    if (ticker == null || ticker.trim().isEmpty()) {
+      throw new InvalidInputException("Stock cannot be null or empty");
+    }
 
     String fromDate = LocalDate.now().minusMonths(1).toString();
     String toDate = LocalDate.now().toString();
@@ -74,7 +81,7 @@ public class NewsService {
         return results;
       } else {
         // Return empty result if no news found
-        System.out.println("Returning empty news list");
+        log.error("Returning empty news list");
         return List.of();
       }
     } catch (Exception e) {

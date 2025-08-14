@@ -60,9 +60,13 @@
   color: #007bff;
 }
 
-.price-cell, .change-cell, .market-cap-cell {
+.exchange-cell, .change-cell {
   font-weight: 500;
-  text-align: right;
+  text-align: left;
+}
+
+.market-cap-cell {
+  text-align: center;
 }
 
 .industry-cell {

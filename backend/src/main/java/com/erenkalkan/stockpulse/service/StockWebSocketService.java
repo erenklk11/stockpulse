@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StockPriceFetcherService {
+public class StockWebSocketService {
 
   @Value("${app.api.finnhub.websocketUrl}")
   private String websocketUrl;
@@ -44,7 +44,7 @@ public class StockPriceFetcherService {
 
   @PostConstruct
   public void initialize() {
-    log.info("StockPriceFetcherService initialized - establishing WebSocket connection");
+    log.info("StockWebSocketService initialized - establishing WebSocket connection");
     connectToFinnhub();
   }
 
@@ -175,7 +175,11 @@ public class StockPriceFetcherService {
           return;
         }
 
-        StockPriceDTO stockPriceDTO = new StockPriceDTO(symbol, price, timestamp);
+        StockPriceDTO stockPriceDTO = StockPriceDTO.builder()
+                .symbol(symbol)
+                .price(price)
+                .timestamp(timestamp)
+                .build();
 
         kafkaPublisher.publishStockPrice(stockPriceDTO);
 
