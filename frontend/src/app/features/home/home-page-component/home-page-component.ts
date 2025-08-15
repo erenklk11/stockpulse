@@ -17,10 +17,6 @@ export class HomePageComponent {
 
   dashboardSelected: boolean = true;
 
-  getFirstName(): string {
-    return sessionStorage.getItem("firstName") || "";
-  }
-
   selectDashboard(): void {
     this.dashboardSelected = true;
   }
