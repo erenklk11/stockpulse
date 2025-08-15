@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockDataDTO {
+public class StockRecommendationsDTO {
 
-  private String name;
-  private String description;
-  private String logoUrl;
-  private String marketCap;
-  private String exchange;
-  private String industry;
+  private int strongBuy;
+  private int buy;
+  private int hold;
+  private int sell;
+  private int strongSell;
+
 }

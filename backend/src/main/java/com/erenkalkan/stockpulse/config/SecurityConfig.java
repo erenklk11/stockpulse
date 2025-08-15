@@ -35,7 +35,7 @@ public class SecurityConfig {
   @Order(1)
   public SecurityFilterChain publicFilterChain(HttpSecurity http) throws Exception {
     return http
-            .securityMatcher("/api/auth/**", "/api/oauth/**", "/api/password/**")
+            .securityMatcher("/api/auth/**", "/api/oauth/**", "/api/password/**", "/api/stocks/**")
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())

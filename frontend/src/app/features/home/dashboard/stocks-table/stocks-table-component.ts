@@ -1,10 +1,10 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {StocksWebsocketService} from '../../../core/services/stocks-websocket-service';
+import {StocksWebsocketService} from '../../../../core/services/stocks-websocket-service';
 import {StockData} from './model/stock-data';
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {Subscription} from 'rxjs';
-import {environment} from '../../../../environments/environments';
+import {environment} from '../../../../../environments/environments';
 
 @Component({
   selector: 'app-stocks-table-component',

@@ -1,8 +1,8 @@
 package com.erenkalkan.stockpulse.controller;
 
+import com.erenkalkan.stockpulse.model.dto.StockDTO;
 import com.erenkalkan.stockpulse.model.dto.StockDataDTO;
 import com.erenkalkan.stockpulse.service.StocksService;
-import com.google.errorprone.annotations.RequiredModifiers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +19,11 @@ public class StocksController {
 
   @GetMapping("/stock-data")
   public ResponseEntity<StockDataDTO> getStockData(@RequestParam String symbol) {
-    return ResponseEntity.ok(stocksService.getStockData(symbol));
+    return ResponseEntity.ok(stocksService.getStockDataForHomePage(symbol));
+  }
+
+  @GetMapping("/stock")
+  public ResponseEntity<StockDTO> getStock(@RequestParam String symbol) {
+    return ResponseEntity.ok(stocksService.getStock(symbol));
   }
 }
