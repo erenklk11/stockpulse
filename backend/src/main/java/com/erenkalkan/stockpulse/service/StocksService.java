@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
@@ -25,11 +26,37 @@ public class StocksService {
   @Value("${app.api.finnhub.key}")
   private String key;
 
+  private static final long CACHE_TTL_MILLIS = 24 * 60 * 60 * 1000; // 1 day
+  private final ConcurrentHashMap<String, CacheEntry> cache = new ConcurrentHashMap<>();
+
+  private static class CacheEntry {
+    final StockDataDTO data;
+    final long timestamp;
+
+    CacheEntry(StockDataDTO data, long timestamp) {
+      this.data = data;
+      this.timestamp = timestamp;
+    }
+  }
+
   public StockDataDTO getStockData(String symbol) {
     if (symbol == null || symbol.trim().isEmpty()) {
       throw new InvalidInputException("Stock symbol cannot be null or empty");
     }
 
+    CacheEntry cached = cache.get(symbol);
+    long now = Instant.now().toEpochMilli();
+    if (cached != null && (now - cached.timestamp) < CACHE_TTL_MILLIS) {
+      return cached.data;
+    }
+
+    StockDataDTO data = fetchStockDataFromApi(symbol);
+
+    cache.put(symbol, new CacheEntry(data, now));
+    return data;
+  }
+
+  private StockDataDTO fetchStockDataFromApi(String symbol) {
     String apiUrl = url + "stock/profile2?symbol=" + symbol + "&token=" + key;
 
     try {
