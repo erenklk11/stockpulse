@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SearchService {
 
-  @Value("${app.api.alphaVantage.url}")
+  @Value("${app.api.finnhub.url}")
   private String url;
 
-  @Value("${app.api.alphaVantage.key}")
+  @Value("${app.api.finnhub.key}")
   private String key;
 
   private final RestClient restClient;
@@ -31,7 +31,7 @@ public class SearchService {
     if (input == null || input.trim().isEmpty()) {
       throw new InvalidInputException("Input cannot be null or empty");
     }
-    String apiUrl = url + "?function=SYMBOL_SEARCH&keywords=" + input + "&apikey=" + key;
+    String apiUrl = url + "search?q=" + input + "&token=" + key;
 
     try {
       Map<String, Object> response = restClient.get()
@@ -39,15 +39,15 @@ public class SearchService {
           .retrieve()
           .body(Map.class);
 
-      if (response != null && response.containsKey("bestMatches")) {
-        List<Map<String, String>> bestMatches = (List<Map<String, String>>) response.get("bestMatches");
+      if (response != null && response.containsKey("result")) {
+        List<Map<String, String>> bestMatches = (List<Map<String, String>>) response.get("result");
 
         // Only showing the first 5 results since rest would be irrelevant for the user
         List<SearchTickerResponseDTO> processedResults = bestMatches.stream()
             .limit(5)
             .map(match -> SearchTickerResponseDTO.builder()
-                .symbol(match.get("1. symbol"))
-                .name(match.get("2. name"))
+                .symbol(match.get("symbol"))
+                .name(match.get("description"))
                 .build())
             .collect(Collectors.toList());
 

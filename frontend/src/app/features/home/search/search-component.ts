@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
@@ -18,7 +18,8 @@ export class SearchComponent {
   private searchTimeout: any;
   isLoading: boolean = false;
 
-  constructor (private http: HttpClient) {}
+  constructor (private http: HttpClient,
+               private cdr: ChangeDetectorRef) {}
 
   getBestMatches(): any {
     // Clear any existing timeout
@@ -48,6 +49,7 @@ export class SearchComponent {
           this.isLoading = false;
           if (response && response.length > 0) {
             this.results = response;
+            this.cdr.detectChanges();
           }
           else {
             this.results = [];
