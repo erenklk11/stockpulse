@@ -10,8 +10,4 @@ import {HeaderComponent} from './shared/header-component/header-component';
 })
 export class App {
   protected title = 'stockpulse';
-
-  getFirstName(): string {
-    return sessionStorage.getItem("firstName") || "";
-  }
 }
