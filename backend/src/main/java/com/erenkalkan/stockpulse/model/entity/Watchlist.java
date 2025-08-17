@@ -38,12 +38,24 @@ public class Watchlist {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  @OneToMany(mappedBy = "watchlist", cascade = CascadeType.ALL, orphanRemoval = true)
   @Size(max = 50, message = "Maximum 50 stock tickers allowed per watchlist")
-  @ElementCollection
-  @CollectionTable(name = "watchlist_stock_tickers", joinColumns = @JoinColumn(name = "watchlist_id"))
-  @Column(name = "stock_ticker")
-  private List<@NotBlank @Pattern(regexp = "^[A-Z]{1,5}$", message = "Stock ticker must be 1-5 uppercase letters") String> stockTickers;
+  private List<Alert> alerts;
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
+
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
 }

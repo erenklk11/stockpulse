@@ -3,9 +3,9 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-wishlist-component',
   standalone: true,
-  templateUrl: './wishlist-component.html',
-  styleUrl: './wishlist-component.css'
+  templateUrl: './watchlist-component.html',
+  styleUrl: './watchlist-component.css'
 })
-export class WishlistComponent {
+export class WatchlistComponent {
 
 }

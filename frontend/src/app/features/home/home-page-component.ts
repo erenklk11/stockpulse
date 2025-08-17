@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TickerTape } from '../ticker-tape/ticker-tape';
 import {SearchComponent} from './search/search-component';
 import {DashboardComponent} from './dashboard/dashboard-component';
-import {WishlistComponent} from '../wishlist/wishlist-component';
+import {WatchlistComponent} from '../watchlist/watchlist-component';
 import {CommonModule} from '@angular/common';
 import {NewsComponent} from '../news/news-component';
 import {HeaderComponent} from '../../shared/header-component/header-component';
@@ -11,7 +11,7 @@ import {RouterOutlet} from '@angular/router';
 @Component({
   selector: 'app-home-page-component',
   standalone: true,
-  imports: [TickerTape, SearchComponent, DashboardComponent, WishlistComponent, CommonModule, NewsComponent, HeaderComponent],
+  imports: [TickerTape, SearchComponent, DashboardComponent, WatchlistComponent, CommonModule, NewsComponent, HeaderComponent],
   templateUrl: './home-page-component.html',
   styleUrl: './home-page-component.css'
 })
@@ -27,7 +27,7 @@ export class HomePageComponent {
     this.dashboardSelected = true;
   }
 
-  selectWishlist(): void {
+  selectWatchlist(): void {
     this.dashboardSelected = false;
   }
 
