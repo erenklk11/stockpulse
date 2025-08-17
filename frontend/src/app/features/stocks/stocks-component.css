@@ -80,6 +80,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  flex: 1;
 }
 
 .stock-name-row {
@@ -108,6 +109,22 @@
   color: #3a7bd5;
   font-weight: 500;
   margin-left: 32px;
+}
+
+.stock-price-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: absolute;
+  right: 100px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.stock-price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #222;
 }
 
 .news-section {

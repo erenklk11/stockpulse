@@ -11,6 +11,14 @@
       <span class="stock-exchange">{{stock.data.exchange}}</span>
       <span class="stock-market-cap">Market Cap = {{stock.data.marketCap}}</span>
     </div>
+    <div class="stock-price-row">
+      <ng-container *ngIf="stockPrice === 0">
+        <h4>Market closed - Live price not available</h4>
+      </ng-container>
+      <ng-container *ngIf="stockPrice !== 0">
+        <span class="stock-price">${{stockPrice | number:'1.2-2'}}</span>
+      </ng-container>
+    </div>
   </div>
 </div>
 
