@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {provideRouter, withRouterConfig} from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideOAuthClient } from 'angular-oauth2-oidc';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';

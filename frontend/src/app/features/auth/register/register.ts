@@ -7,6 +7,7 @@ import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     CommonModule,

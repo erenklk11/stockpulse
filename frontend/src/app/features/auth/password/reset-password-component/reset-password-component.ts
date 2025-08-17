@@ -7,6 +7,7 @@ import {ResetPasswordRequestDto} from '../model/reset-password-request-dto';
 
 @Component({
   selector: 'app-reset-password-component',
+  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './reset-password-component.html',
   styleUrl: './reset-password-component.css'

@@ -5,6 +5,7 @@ import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-header-component',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './header-component.html',
   styleUrl: './header-component.css'
@@ -23,7 +24,10 @@ export class HeaderComponent {
   }
 
   onSettingsClick(): void {
-    console.log('Settings icon clicked');
     this.router.navigate([routes.find(route => route.path === 'settings')?.path || '/settings']);
+  }
+
+  onLogoClick(): void {
+    this.router.navigate([routes.find(route => route.path === 'home')?.path || '/home']);
   }
 }

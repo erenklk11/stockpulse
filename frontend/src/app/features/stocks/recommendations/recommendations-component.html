@@ -1,0 +1,49 @@
+<div class="stock-recommendations">
+  <div class="recommendations-container">
+    <div class="recommendations-header">
+      <h1>Analyst Recommendations</h1>
+      <p>Professional Investment Guidance</p>
+    </div>
+
+    <div class="recommendations-grid">
+      <div class="recommendation-item strong-buy" [class.highlighted]="isHighestRecommendation('strongBuy')">
+        <div class="recommendation-label">
+          <span class="recommendation-text">Strong Buy</span>
+        </div>
+        <div class="recommendation-count">{{ recommendations.strongBuy }}</div>
+      </div>
+
+      <div class="recommendation-item buy" [class.highlighted]="isHighestRecommendation('buy')">
+        <div class="recommendation-label">
+          <span class="recommendation-text">Buy</span>
+        </div>
+        <div class="recommendation-count">{{ recommendations.buy }}</div>
+      </div>
+
+      <div class="recommendation-item hold" [class.highlighted]="isHighestRecommendation('hold')">
+        <div class="recommendation-label">
+          <span class="recommendation-text">Hold</span>
+        </div>
+        <div class="recommendation-count">{{ recommendations.hold }}</div>
+      </div>
+
+      <div class="recommendation-item sell" [class.highlighted]="isHighestRecommendation('sell')">
+        <div class="recommendation-label">
+          <span class="recommendation-text">Sell</span>
+        </div>
+        <div class="recommendation-count">{{ recommendations.sell }}</div>
+      </div>
+
+      <div class="recommendation-item strong-sell" [class.highlighted]="isHighestRecommendation('strongSell')">
+        <div class="recommendation-label">
+          <span class="recommendation-text">Strong Sell</span>
+        </div>
+        <div class="recommendation-count">{{ recommendations.strongSell }}</div>
+      </div>
+    </div>
+
+    <div class="consensus-indicator" [ngClass]="getConsensusClass()">
+      <strong>Consensus: {{ getConsensusText() }}</strong>
+    </div>
+  </div>
+</div>

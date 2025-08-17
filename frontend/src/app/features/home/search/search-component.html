@@ -16,7 +16,7 @@
 <!-- Search Results -->
 <div class="search-results" *ngIf="results.length > 0 && !isLoading">
   <h3>Search Results</h3>
-  <div class="result-item" *ngFor="let result of results">
+  <div (click)="onResultClicked(result.symbol)" class="result-item" *ngFor="let result of results">
     <div class="symbol">{{ result.symbol }}</div>
     <div class="name">{{ result.name }}</div>
   </div>

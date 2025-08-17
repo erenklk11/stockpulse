@@ -1,0 +1,15 @@
+div {
+  background: #f8f9fa;
+  padding: 24px 32px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin: 24px 0;
+}
+
+p {
+  font-size: 1.15rem;
+  line-height: 1.4;
+  font-weight: 400;
+  margin: 0;
+}
+

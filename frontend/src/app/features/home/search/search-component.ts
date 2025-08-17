@@ -4,9 +4,12 @@ import {FormsModule} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../../environments/environments';
 import {SearchTickerResponse} from './model/api-response';
+import {Router} from '@angular/router';
+import {routes} from '../../../app.routes';
 
 @Component({
   selector: 'app-search-component',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './search-component.html',
   styleUrl: './search-component.css'
@@ -19,7 +22,8 @@ export class SearchComponent {
   isLoading: boolean = false;
 
   constructor (private http: HttpClient,
-               private cdr: ChangeDetectorRef) {}
+               private cdr: ChangeDetectorRef,
+               private router: Router) {}
 
   getBestMatches(): any {
     // Clear any existing timeout
@@ -72,5 +76,8 @@ export class SearchComponent {
     }, 2000);
   }
 
+  onResultClicked(symbol: string):void {
+    this.router.navigate([`/stocks`], { queryParams: { symbol } });
+  }
 
 }

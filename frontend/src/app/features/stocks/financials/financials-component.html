@@ -1,0 +1,144 @@
+<div class="stock-financials">
+  <div class="financials-grid">
+    <!-- Balance Sheet Section -->
+    <div class="financial-section balance-sheet">
+      <div class="section-header">
+        Balance Sheet
+      </div>
+
+      <div class="financial-item highlight-item">
+        <span class="item-label">Total Assets</span>
+        <span class="item-value positive">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.assets) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Current Assets</span>
+        <span class="item-value">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.currentAssets) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Total Liabilities</span>
+        <span class="item-value negative">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.liabilities) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Current Liabilities</span>
+        <span class="item-value negative">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.currentLiabilities) }}
+        </span>
+      </div>
+
+      <div class="financial-item highlight-item">
+        <span class="item-label">Shareholders' Equity</span>
+        <span class="item-value positive">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.equity) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Income Statement Section -->
+    <div class="financial-section income-statement">
+      <div class="section-header">
+        Income Statement
+      </div>
+
+      <div class="financial-item highlight-item">
+        <span class="item-label">Total Revenues</span>
+        <span class="item-value positive">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.revenues) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Gross Profit</span>
+        <span class="item-value positive">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.grossProfit) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Operating Income</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.operatingIncome)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.operatingIncome) }}
+        </span>
+      </div>
+
+      <div class="financial-item highlight-item">
+        <span class="item-label">Net Income</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.netIncome)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.netIncome) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Basic EPS</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.basicEarningsPerShare)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.basicEarningsPerShare) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Diluted EPS</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.dilutedEarningsPerShare)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.dilutedEarningsPerShare) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Cash Flow Statement Section -->
+    <div class="financial-section cash-flow">
+      <div class="section-header">
+        Cash Flow Statement
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Operating Activities</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.netCashFlowFromOperatingActivities)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.netCashFlowFromOperatingActivities) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Investing Activities</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.netCashFlowFromInvestingActivities)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.netCashFlowFromInvestingActivities) }}
+        </span>
+      </div>
+
+      <div class="financial-item">
+        <span class="item-label">Financing Activities</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.netCashFlowFromFinancingActivities)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.netCashFlowFromFinancingActivities) }}
+        </span>
+      </div>
+
+      <div class="financial-item highlight-item">
+        <span class="item-label">Net Cash Flow</span>
+        <span class="item-value" [ngClass]="getValueClass(financials.netCashFlow)">
+          <span class="currency-symbol">$</span>
+          {{ formatCurrency(financials.netCashFlow) }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,52 @@
+<app-header-component [firstName]="getFirstName()"></app-header-component>
 <div class="ticker-tape-section">
   <app-ticker-tape></app-ticker-tape>
 </div>
 
-<div>
-  <h3></h3>
+<div class="stock-info-container" *ngIf="stock">
+  <img [src]="stock.data.logoUrl" class="stock-logo" />
+  <div class="stock-details">
+    <div class="stock-name-row">
+      <h2 class="stock-name">{{stock.data.name}}</h2>
+      <span class="stock-exchange">{{stock.data.exchange}}</span>
+      <span class="stock-market-cap">Market Cap = {{stock.data.marketCap}}</span>
+    </div>
+  </div>
+</div>
+
+<div class="stock-data-section">
+  <div class="section-navigation">
+    <h3
+      class="nav-header"
+      [class.active]="selectedSection === 'description'"
+      (click)="selectDescription()">
+      Description
+    </h3>
+    <h3
+      class="nav-header"
+      [class.active]="selectedSection === 'financials'"
+      (click)="selectFinancials()">
+      Financials
+    </h3>
+    <h3
+      class="nav-header"
+      [class.active]="selectedSection === 'recommendations'"
+      (click)="selectRecommendations()">
+      Recommendations
+    </h3>
+  </div>
+
+  <div *ngIf="selectedSection === 'description'">
+    <app-description-component [description]="stock.data.description"></app-description-component>
+  </div>
+  <div *ngIf="selectedSection === 'financials'">
+    <app-financials-component [financials]="stock.financials" ></app-financials-component>
+  </div>
+  <div *ngIf="selectedSection === 'recommendations'">
+    <app-recommendations-component [recommendations]="stock.recommendations"></app-recommendations-component>
+  </div>
+</div>
+
+<div class="news-section">
+  <app-news-component [ticker]="stockTicker" ></app-news-component>
 </div>

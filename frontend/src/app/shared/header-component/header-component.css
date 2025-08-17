@@ -32,6 +32,7 @@
 
 .logo-section img {
   display: block;
+  cursor: pointer;
 }
 
 .icons-section {

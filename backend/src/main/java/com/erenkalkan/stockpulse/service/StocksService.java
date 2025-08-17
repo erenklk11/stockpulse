@@ -91,7 +91,7 @@ public class StocksService {
         String exchange = (String) result.get("exchange");
         String industry = (String) result.get("finnhubIndustry");
         String marketCap = result.get("marketCapitalization").toString();
-        marketCap = convertMarketCapToStringValue(marketCap);
+        marketCap = convertMarketCapFromFinnhubAPIToStringValue(marketCap);
 
         return StockDataDTO.builder()
                 .exchange(exchange)
@@ -132,9 +132,10 @@ public class StocksService {
         String name = (String) results.get("name");
         String description = (String) results.get("description");
         String logoUrl = (String) branding.get("logo_url");
+        logoUrl = logoUrl + "?apiKey=" + polygonKey;
         String exchange = (String) results.get("primary_exchange");
         String marketCap = results.get("market_cap").toString();
-        marketCap = convertMarketCapToStringValue(marketCap);
+        marketCap = convertMarketCapFromPolygonAPIToStringValue(marketCap);
 
         return StockDataDTO.builder()
                 .name(name)
@@ -287,7 +288,7 @@ public class StocksService {
     return 0.0; // Default value if field not found
   }
 
-  private String convertMarketCapToStringValue(String marketCap) {
+  private String convertMarketCapFromFinnhubAPIToStringValue(String marketCap) {
     Double millionsMarketCap = Double.parseDouble(marketCap); // Receiving already in millions from the Finnhub API
 
     if (millionsMarketCap >= 1_000_000) {
@@ -303,6 +304,27 @@ public class StocksService {
     }
 
     Double truncated = Math.floor(millionsMarketCap * 10) / 10.0;
+    return truncated.toString() + "M";
+  }
+
+  private String convertMarketCapFromPolygonAPIToStringValue(String marketCap) {
+    Double doubleMarketCap = Double.parseDouble(marketCap); // Can handle scientific notation
+    Long longMarketCap = doubleMarketCap.longValue(); // Convert to long for comparison
+
+    if (longMarketCap >= 1_000_000_000_000L) {
+      Double trillions = longMarketCap / 1_000_000_000_000.0;
+      Double truncated = Math.floor(trillions * 10) / 10.0;
+      return truncated.toString() + "T";
+    }
+
+    if (longMarketCap >= 1_000_000_000L) {
+      Double billions = longMarketCap / 1_000_000_000.0;
+      Double truncated = Math.floor(billions * 10) / 10.0;
+      return truncated.toString() + "B";
+    }
+
+    Double millions = longMarketCap / 1_000_000.0;
+    Double truncated = Math.floor(millions * 10) / 10.0;
     return truncated.toString() + "M";
   }
 }
