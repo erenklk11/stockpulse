@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -85,5 +87,26 @@ public class WatchlistService {
     }
 
     return delete(watchlist);
+  }
+
+  public List<Watchlist> getAllWatchlists(Authentication authentication) {
+
+    Optional<User> optionalUser = userService.findByEmail(authentication.getName());
+    if (optionalUser.isEmpty()) {
+      throw new UserNotFoundException("User with email: " + authentication.getName() + " was not found");
+    }
+    User user = optionalUser.get();
+
+    List<Watchlist> watchlists = user.getWatchlists();
+    if (watchlists.isEmpty() || watchlists == null) {
+      return List.of();
+    }
+
+    // Set the alertCounts to be display at the watchlist section on the home page
+    watchlists = watchlists.stream()
+            .peek(watchlist -> watchlist.setAlertCount(watchlist.getAlerts().size()))
+            .toList();
+
+    return watchlists;
   }
 }

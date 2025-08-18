@@ -52,8 +52,13 @@ export class StocksTableComponent implements OnInit {
 
           this.cdr.detectChanges();
         },
-        error: () => {
-          console.error("Error fetching stock data")
+        error: (error) => {
+          if (error.message()) {
+            console.error("Could not get stock data: " + error.message());
+          }
+          else {
+            console.error("Could not get stock data");
+          }
         }
       });
     }

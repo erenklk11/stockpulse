@@ -1,4 +1,4 @@
-<div class="stock-financials">
+<div *ngIf="financials" class="stock-financials">
   <div class="financials-grid">
     <!-- Balance Sheet Section -->
     <div class="financial-section balance-sheet">
@@ -141,4 +141,7 @@
       </div>
     </div>
   </div>
+</div>
+<div>
+  <h3>Financials not available at this moment.</h3>
 </div>

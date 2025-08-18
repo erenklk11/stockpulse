@@ -1,5 +1,5 @@
-import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
-import {TickerTape} from '../ticker-tape/ticker-tape';
+import {Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy} from '@angular/core';
+import {TickerTape} from '../../shared/ticker-tape/ticker-tape';
 import {Stock} from './model/stock';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environments';
@@ -14,6 +14,7 @@ import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-stocks-component',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     TickerTape,

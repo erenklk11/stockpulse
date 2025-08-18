@@ -3,7 +3,7 @@
   <app-ticker-tape></app-ticker-tape>
 </div>
 
-<div class="stock-info-container" *ngIf="stock">
+<div class="stock-info-container" *ngIf="stock && stock.data">
   <img [src]="stock.data.logoUrl" class="stock-logo" />
   <div class="stock-details">
     <div class="stock-name-row">

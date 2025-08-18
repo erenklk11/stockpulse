@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,9 +43,13 @@ public class Watchlist {
   private User user;
 
   @JsonManagedReference
+  @Builder.Default
   @OneToMany(mappedBy = "watchlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @Size(max = 50, message = "Maximum 50 stock tickers allowed per watchlist")
-  private List<Alert> alerts;
+  private List<Alert> alerts = new ArrayList<>();
+
+  @Transient
+  private int alertCount;
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;

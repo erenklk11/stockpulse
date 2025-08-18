@@ -27,7 +27,7 @@ import java.util.ArrayList;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"password", "watchlist"})
+@ToString(exclude = {"password", "watchlists"})
 public class User implements UserDetails {
 
   @Id
@@ -67,7 +67,7 @@ public class User implements UserDetails {
   @JsonManagedReference
   @Builder.Default
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<Watchlist> watchlist = new ArrayList<>();
+  private List<Watchlist> watchlists = new ArrayList<>();
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;

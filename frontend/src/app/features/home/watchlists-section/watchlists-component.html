@@ -38,7 +38,7 @@
   </div>
 
   <!-- Watchlists Grid -->
-  <div class="watchlists-grid">
+  <div *ngIf="watchlists.length > 0" class="watchlists-grid">
     <div
       *ngFor="let watchlist of watchlists;"
       class="watchlist-card"

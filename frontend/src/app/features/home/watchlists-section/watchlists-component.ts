@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Watchlist} from './model/watchlist';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environments';
+import {environment} from '../../../../environments/environments';
 
 @Component({
   selector: 'app-watchlist-component',
@@ -12,10 +12,10 @@ import {environment} from '../../../environments/environments';
     CommonModule,
     FormsModule
   ],
-  templateUrl: './watchlist-component.html',
-  styleUrl: './watchlist-component.css'
+  templateUrl: './watchlists-component.html',
+  styleUrl: './watchlists-component.css'
 })
-export class WatchlistComponent {
+export class WatchlistsComponent implements OnInit {
 
   watchlists: Watchlist[] = [];
   newWatchlistName: string = '';
@@ -23,11 +23,35 @@ export class WatchlistComponent {
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
+  ngOnInit(): void {
+        this.getAllWatchlists();
+    }
+
   toggleCreateForm(): void {
     this.isCreating = !this.isCreating;
     if (!this.isCreating) {
       this.newWatchlistName = '';
     }
+  }
+
+  getAllWatchlists(): void {
+    this.http.get<any>(environment.apiUrl + environment.endpoints.watchlist.getAll,
+      {withCredentials: true}).subscribe({
+      next: (response) => {
+        if (Array.isArray(response)) {
+          this.watchlists = response;
+          this.cdr.detectChanges();
+        }
+      },
+      error: (error) => {
+        if (error.message()) {
+          console.error("Could not get wishlists: " + error.message());
+        }
+        else {
+          console.error("Could not get wishlists");
+        }
+      }
+    });
   }
 
   createWatchlist(): void {
@@ -38,6 +62,7 @@ export class WatchlistComponent {
         next: (response) => {
           if (response) {
             const newWatchlist: Watchlist = response;
+            newWatchlist.alertCount = 0;
             this.watchlists.push(newWatchlist);
             this.cdr.detectChanges();
           }

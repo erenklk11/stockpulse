@@ -74,7 +74,7 @@ export class NewsComponent implements OnInit{
   }
 
   onImageError(event: any): void {
-    event.target.src = 'assets/placeholder-news.png'; // You can add a placeholder image
+    event.target.src = '/yahoo_finance.jpeg'; // You can add a placeholder image
     event.target.alt = 'News image unavailable';
   }
 

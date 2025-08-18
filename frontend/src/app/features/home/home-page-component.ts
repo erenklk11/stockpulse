@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { TickerTape } from '../ticker-tape/ticker-tape';
+import { TickerTape } from '../../shared/ticker-tape/ticker-tape';
 import {SearchComponent} from './search/search-component';
 import {DashboardComponent} from './dashboard/dashboard-component';
-import {WatchlistComponent} from '../watchlist/watchlist-component';
+import {WatchlistsComponent} from './watchlists-section/watchlists-component';
 import {CommonModule} from '@angular/common';
 import {NewsComponent} from '../news/news-component';
 import {HeaderComponent} from '../../shared/header-component/header-component';
@@ -10,7 +10,7 @@ import {HeaderComponent} from '../../shared/header-component/header-component';
 @Component({
   selector: 'app-home-page-component',
   standalone: true,
-  imports: [TickerTape, SearchComponent, DashboardComponent, WatchlistComponent, CommonModule, NewsComponent, HeaderComponent],
+  imports: [TickerTape, SearchComponent, DashboardComponent, WatchlistsComponent, CommonModule, NewsComponent, HeaderComponent],
   templateUrl: './home-page-component.html',
   styleUrl: './home-page-component.css'
 })

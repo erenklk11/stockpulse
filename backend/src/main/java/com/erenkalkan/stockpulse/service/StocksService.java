@@ -153,6 +153,7 @@ public class StocksService {
     }
   }
 
+  // Ignoring exceptions because Polygon's API endpoint is currently experimental.
   private StockFinancialsDTO fetchStockFinancials(String companyName) {
     if (companyName == null || companyName.trim().isEmpty()) {
       throw new InvalidInputException("Company name cannot be null or empty");
@@ -170,58 +171,56 @@ public class StocksService {
       if (result != null && !result.isEmpty()) {
 
         List<Map<String, Object>> results = (List<Map<String, Object>>) result.get("results");
-        if (results == null || results.isEmpty()) {
-          throw new RuntimeException("No financial data found in response");
+        if (results != null || results.size() != 0) {
+
+          Map<String, Object> firstResult = results.get(0);
+          Map<String, Object> financials = (Map<String, Object>) firstResult.get("financials");
+
+          if (financials == null) {
+            throw new RuntimeException("No financials data found");
+          }
+
+          // Extract nested financial statement data
+          Map<String, Object> balanceSheet = (Map<String, Object>) financials.get("balance_sheet");
+          Map<String, Object> incomeStatement = (Map<String, Object>) financials.get("income_statement");
+          Map<String, Object> cashFlowStatement = (Map<String, Object>) financials.get("cash_flow_statement");
+
+          StockFinancialsDTO dto = new StockFinancialsDTO();
+
+          // Balance Sheet fields
+          if (balanceSheet != null) {
+            dto.setAssets(extractLongValue(balanceSheet, "assets"));
+            dto.setLiabilities(extractLongValue(balanceSheet, "liabilities"));
+            dto.setEquity(extractLongValue(balanceSheet, "equity"));
+            dto.setCurrentAssets(extractLongValue(balanceSheet, "current_assets"));
+            dto.setCurrentLiabilities(extractLongValue(balanceSheet, "current_liabilities"));
+          }
+
+          // Income Statement fields
+          if (incomeStatement != null) {
+            dto.setRevenues(extractLongValue(incomeStatement, "revenues"));
+            dto.setGrossProfit(extractLongValue(incomeStatement, "gross_profit"));
+            dto.setOperatingIncome(extractLongValue(incomeStatement, "operating_income_loss"));
+            dto.setNetIncome(extractLongValue(incomeStatement, "net_income_loss"));
+            dto.setBasicEarningsPerShare(extractDoubleValue(incomeStatement, "basic_earnings_per_share"));
+            dto.setDilutedEarningsPerShare(extractDoubleValue(incomeStatement, "diluted_earnings_per_share"));
+          }
+
+          // Cash Flow Statement fields
+          if (cashFlowStatement != null) {
+            dto.setNetCashFlowFromOperatingActivities(extractLongValue(cashFlowStatement, "net_cash_flow_from_operating_activities"));
+            dto.setNetCashFlowFromInvestingActivities(extractLongValue(cashFlowStatement, "net_cash_flow_from_investing_activities"));
+            dto.setNetCashFlowFromFinancingActivities(extractLongValue(cashFlowStatement, "net_cash_flow_from_financing_activities"));
+            dto.setNetCashFlow(extractLongValue(cashFlowStatement, "net_cash_flow"));
+          }
+          return dto;
         }
-
-        Map<String, Object> firstResult = results.get(0);
-        Map<String, Object> financials = (Map<String, Object>) firstResult.get("financials");
-
-        if (financials == null) {
-          throw new RuntimeException("No financials data found");
-        }
-
-        // Extract nested financial statement data
-        Map<String, Object> balanceSheet = (Map<String, Object>) financials.get("balance_sheet");
-        Map<String, Object> incomeStatement = (Map<String, Object>) financials.get("income_statement");
-        Map<String, Object> cashFlowStatement = (Map<String, Object>) financials.get("cash_flow_statement");
-
-        StockFinancialsDTO dto = new StockFinancialsDTO();
-
-        // Balance Sheet fields
-        if (balanceSheet != null) {
-          dto.setAssets(extractLongValue(balanceSheet, "assets"));
-          dto.setLiabilities(extractLongValue(balanceSheet, "liabilities"));
-          dto.setEquity(extractLongValue(balanceSheet, "equity"));
-          dto.setCurrentAssets(extractLongValue(balanceSheet, "current_assets"));
-          dto.setCurrentLiabilities(extractLongValue(balanceSheet, "current_liabilities"));
-        }
-
-        // Income Statement fields
-        if (incomeStatement != null) {
-          dto.setRevenues(extractLongValue(incomeStatement, "revenues"));
-          dto.setGrossProfit(extractLongValue(incomeStatement, "gross_profit"));
-          dto.setOperatingIncome(extractLongValue(incomeStatement, "operating_income_loss"));
-          dto.setNetIncome(extractLongValue(incomeStatement, "net_income_loss"));
-          dto.setBasicEarningsPerShare(extractDoubleValue(incomeStatement, "basic_earnings_per_share"));
-          dto.setDilutedEarningsPerShare(extractDoubleValue(incomeStatement, "diluted_earnings_per_share"));
-        }
-
-        // Cash Flow Statement fields
-        if (cashFlowStatement != null) {
-          dto.setNetCashFlowFromOperatingActivities(extractLongValue(cashFlowStatement, "net_cash_flow_from_operating_activities"));
-          dto.setNetCashFlowFromInvestingActivities(extractLongValue(cashFlowStatement, "net_cash_flow_from_investing_activities"));
-          dto.setNetCashFlowFromFinancingActivities(extractLongValue(cashFlowStatement, "net_cash_flow_from_financing_activities"));
-          dto.setNetCashFlow(extractLongValue(cashFlowStatement, "net_cash_flow"));
-        }
-        return dto;
       }
-
       log.warn("Empty or null response from Polygon API for company: {}", companyName);
       return StockFinancialsDTO.builder().build();
 
     } catch (Exception e) {
-      throw new RestClientException("Failed to fetch stock financials from Polygon API", e);
+        return null;
     }
   }
 

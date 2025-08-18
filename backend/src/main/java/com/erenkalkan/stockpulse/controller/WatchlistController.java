@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,5 +31,10 @@ public class WatchlistController {
     Map<String, Boolean> response = new HashMap<>();
     response.put("deleted", watchlistService.deleteWatchlist(id, authentication));
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/getAll")
+  public ResponseEntity<List<Watchlist>> getAllWatchlists(Authentication authentication) {
+    return ResponseEntity.ok(watchlistService.getAllWatchlists(authentication));
   }
 }
