@@ -1,6 +1,7 @@
 package com.erenkalkan.stockpulse.model.entity;
 
 import com.erenkalkan.stockpulse.model.enums.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -63,6 +64,7 @@ public class User implements UserDetails {
   @Builder.Default
   private Role role = Role.REGULAR_USER;
 
+  @JsonManagedReference
   @Builder.Default
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Watchlist> watchlist = new ArrayList<>();

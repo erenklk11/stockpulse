@@ -65,7 +65,8 @@ export class StocksComponent implements OnInit {
     this.stockTicker = new URLSearchParams(window.location.search).get('symbol') ?? '';
     if (this.stockTicker != null && this.stockTicker.trim() !== '') {
 
-      this.http.get<any>(environment.apiUrl + environment.endpoints.api.stock + `?symbol=${this.stockTicker}`).subscribe({
+      this.http.get<any>(environment.apiUrl + environment.endpoints.api.stock + `?symbol=${this.stockTicker}`,
+        {withCredentials: true}).subscribe({
         next: (response) => {
 
           if (response != null) {
@@ -76,9 +77,13 @@ export class StocksComponent implements OnInit {
             console.log("Stock is null");
           }
         },
-        error: () => {
-          console.error("Could not get stock data");
-          return;
+        error: (error) => {
+          if (error.message()) {
+            console.error("Could not get stock data: " + error.message());
+          }
+          else {
+            console.error("Could not get stock data");
+          }
         }
       });
     }

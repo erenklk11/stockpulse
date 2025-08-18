@@ -6,7 +6,6 @@ import {WatchlistComponent} from '../watchlist/watchlist-component';
 import {CommonModule} from '@angular/common';
 import {NewsComponent} from '../news/news-component';
 import {HeaderComponent} from '../../shared/header-component/header-component';
-import {RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-home-page-component',

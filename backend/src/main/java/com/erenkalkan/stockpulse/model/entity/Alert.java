@@ -1,6 +1,7 @@
 package com.erenkalkan.stockpulse.model.entity;
 
 import com.erenkalkan.stockpulse.model.enums.TriggerType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,6 +36,7 @@ public class Alert {
 
   @NotNull
   @ManyToOne
+  @JsonBackReference
   @JoinColumn(name = "watchlist_id", nullable = false)
   private Watchlist watchlist;
 

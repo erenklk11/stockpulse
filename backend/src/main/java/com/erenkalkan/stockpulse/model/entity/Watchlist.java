@@ -1,5 +1,7 @@
 package com.erenkalkan.stockpulse.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -33,12 +35,14 @@ public class Watchlist {
   @Column(name = "watchlist_name")
   private String watchlistName;
 
+  @JsonBackReference
   @NotNull(message = "User is required")
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @OneToMany(mappedBy = "watchlist", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  @OneToMany(mappedBy = "watchlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @Size(max = 50, message = "Maximum 50 stock tickers allowed per watchlist")
   private List<Alert> alerts;
 
