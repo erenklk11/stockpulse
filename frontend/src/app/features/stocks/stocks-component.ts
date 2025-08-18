@@ -33,6 +33,7 @@ export class StocksComponent implements OnInit {
   stock!: Stock;
   stockTicker: string = '';
   stockPrice: number = 0;
+  isLoading: boolean = false;
   selectedSection: string = 'description';
   private subscriptions: Subscription[] = [];
 
@@ -65,13 +66,14 @@ export class StocksComponent implements OnInit {
 
     this.stockTicker = new URLSearchParams(window.location.search).get('symbol') ?? '';
     if (this.stockTicker != null && this.stockTicker.trim() !== '') {
-
+      this.isLoading = true;
       this.http.get<any>(environment.apiUrl + environment.endpoints.api.stock + `?symbol=${this.stockTicker}`,
         {withCredentials: true}).subscribe({
         next: (response) => {
 
           if (response != null) {
             this.stock = response;
+            this.isLoading = false;
             this.cdr.detectChanges();
           }
           else {

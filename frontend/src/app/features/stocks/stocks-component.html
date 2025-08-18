@@ -3,58 +3,67 @@
   <app-ticker-tape></app-ticker-tape>
 </div>
 
-<div class="stock-info-container" *ngIf="stock && stock.data">
-  <img [src]="stock.data.logoUrl" class="stock-logo" />
-  <div class="stock-details">
-    <div class="stock-name-row">
-      <h2 class="stock-name">{{stock.data.name}}</h2>
-      <span class="stock-exchange">{{stock.data.exchange}}</span>
-      <span class="stock-market-cap">Market Cap = {{stock.data.marketCap}}</span>
-    </div>
-    <div class="stock-price-row">
-      <ng-container *ngIf="stockPrice === 0">
-        <h4>Market closed - Live price not available</h4>
-      </ng-container>
-      <ng-container *ngIf="stockPrice !== 0">
-        <span class="stock-price">${{stockPrice | number:'1.2-2'}}</span>
-      </ng-container>
-    </div>
-  </div>
+<!-- Loading State -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner"></div>
+  <h2 class="loading-text">Loading {{ stockTicker }} data...</h2>
+  <p class="loading-subtext">Please wait while we fetch the latest information</p>
 </div>
 
-<div class="stock-data-section">
-  <div class="section-navigation">
-    <h3
-      class="nav-header"
-      [class.active]="selectedSection === 'description'"
-      (click)="selectDescription()">
-      Description
-    </h3>
-    <h3
-      class="nav-header"
-      [class.active]="selectedSection === 'financials'"
-      (click)="selectFinancials()">
-      Financials
-    </h3>
-    <h3
-      class="nav-header"
-      [class.active]="selectedSection === 'recommendations'"
-      (click)="selectRecommendations()">
-      Recommendations
-    </h3>
+<div *ngIf="!isLoading">
+  <div class="stock-info-container" *ngIf="stock && stock.data">
+    <img [src]="stock.data.logoUrl" class="stock-logo" />
+    <div class="stock-details">
+      <div class="stock-name-row">
+        <h2 class="stock-name">{{stock.data.name}}</h2>
+        <span class="stock-exchange">{{stock.data.exchange}}</span>
+        <span class="stock-market-cap">Market Cap = {{stock.data.marketCap}}</span>
+      </div>
+      <div class="stock-price-row">
+        <ng-container *ngIf="stockPrice === 0">
+          <h4>Market closed - Live price not available</h4>
+        </ng-container>
+        <ng-container *ngIf="stockPrice !== 0">
+          <span class="stock-price">${{stockPrice | number:'1.2-2'}}</span>
+        </ng-container>
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="selectedSection === 'description'">
-    <app-description-component [description]="stock.data.description"></app-description-component>
-  </div>
-  <div *ngIf="selectedSection === 'financials'">
-    <app-financials-component [financials]="stock.financials" ></app-financials-component>
-  </div>
-  <div *ngIf="selectedSection === 'recommendations'">
-    <app-recommendations-component [recommendations]="stock.recommendations"></app-recommendations-component>
-  </div>
-</div>
+  <div class="stock-data-section">
+    <div class="section-navigation">
+      <h3
+        class="nav-header"
+        [class.active]="selectedSection === 'description'"
+        (click)="selectDescription()">
+        Description
+      </h3>
+      <h3
+        class="nav-header"
+        [class.active]="selectedSection === 'financials'"
+        (click)="selectFinancials()">
+        Financials
+      </h3>
+      <h3
+        class="nav-header"
+        [class.active]="selectedSection === 'recommendations'"
+        (click)="selectRecommendations()">
+        Recommendations
+      </h3>
+    </div>
 
-<div class="news-section">
-  <app-news-component [ticker]="stockTicker" ></app-news-component>
+    <div *ngIf="selectedSection === 'description'">
+      <app-description-component [description]="stock.data.description"></app-description-component>
+    </div>
+    <div *ngIf="selectedSection === 'financials'">
+      <app-financials-component [financials]="stock.financials" ></app-financials-component>
+    </div>
+    <div *ngIf="selectedSection === 'recommendations'">
+      <app-recommendations-component [recommendations]="stock.recommendations"></app-recommendations-component>
+    </div>
+  </div>
+
+  <div class="news-section">
+    <app-news-component [ticker]="stockTicker" ></app-news-component>
+  </div>
 </div>
