@@ -15,7 +15,7 @@
     <img [src]="stock.data.logoUrl" class="stock-logo" />
     <div class="stock-details">
       <div class="stock-name-row">
-        <h2 class="stock-name">{{stock.data.name}}</h2>
+        <h2 class="stock-name">{{stock.data.name.split(',')[0]}}</h2>
         <span class="stock-exchange">{{stock.data.exchange}}</span>
         <span class="stock-market-cap">Market Cap = {{stock.data.marketCap}}</span>
       </div>
@@ -50,6 +50,9 @@
         (click)="selectRecommendations()">
         Recommendations
       </h3>
+      <div class="add-to-watchlist-btn">
+        <button class="btn btn-primary">Add To Watchlist</button>
+      </div>
     </div>
 
     <div *ngIf="selectedSection === 'description'">
