@@ -1,0 +1,133 @@
+<!-- Overlay backdrop -->
+<div class="modal-overlay" (click)="closePopup()">
+  <!-- Modal content -->
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Close button -->
+    <button class="close-btn" (click)="closePopup()">
+      <i class="close-icon">×</i>
+    </button>
+
+    <!-- Header Section -->
+    <div class="header">
+      <h2 class="title">Create Alert for {{ symbol }}</h2>
+    </div>
+
+    <!-- Alert Configuration Form -->
+    <div class="alert-form">
+      <!-- Alert Type Selection -->
+      <div class="form-section">
+        <h3 class="section-title">Alert Type</h3>
+        <div class="alert-type-selector">
+          <label class="radio-option" [class.selected]="triggerType === TriggerType.TO_PRICE">
+            <input
+              type="radio"
+              name="triggerType"
+              [value]="TriggerType.TO_PRICE"
+              [(ngModel)]="triggerType">
+            <span class="radio-custom"></span>
+            <div class="radio-content">
+              <strong>Price Target</strong>
+              <small>Alert when stock reaches a specific price</small>
+            </div>
+          </label>
+
+          <label class="radio-option" [class.selected]="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">
+            <input
+              type="radio"
+              name="triggerType"
+              [value]="TriggerType.PERCENTAGE_CHANGE_PRICE"
+              [(ngModel)]="triggerType">
+            <span class="radio-custom"></span>
+            <div class="radio-content">
+              <strong>Percentage Change</strong>
+              <small>Alert when stock changes by a certain percentage</small>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Alert Value Input -->
+      <div class="form-section">
+        <h3 class="section-title">
+          {{ triggerType === TriggerType.TO_PRICE ? 'Target Price' : 'Percentage Change' }}
+        </h3>
+        <div class="value-input-group">
+          <span class="input-prefix" *ngIf="triggerType === TriggerType.TO_PRICE">$</span>
+          <input
+            type="number"
+            class="value-input"
+            [placeholder]="triggerType === TriggerType.TO_PRICE ? 'e.g., 150.00' : 'e.g., 5.5'"
+            [(ngModel)]="alertValue"
+            [step]="triggerType === TriggerType.TO_PRICE ? '0.01' : '0.1'"
+            [min]="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE ? '-100' : '0'">
+          <span class="input-suffix" *ngIf="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">%</span>
+        </div>
+        <small class="input-help" *ngIf="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">
+          Use positive values for increases, negative for decreases
+        </small>
+      </div>
+
+      <!-- Current Price Info -->
+      <div class="current-price-info" *ngIf="currentStockPrice">
+        <div class="price-display">
+          <span class="label">Current Price:</span>
+          <span class="price">${{ currentStockPrice | number:'1.2-2' }}</span>
+        </div>
+        <div class="price-difference" *ngIf="triggerType === TriggerType.TO_PRICE && alertValue">
+          <span class="difference" [class.positive]="alertValue > currentStockPrice" [class.negative]="alertValue < currentStockPrice">
+            {{ alertValue > currentStockPrice ? '+' : '' }}{{ ((alertValue - currentStockPrice) / currentStockPrice * 100) | number:'1.1-1' }}%
+            ({{ alertValue > currentStockPrice ? '+' : '' }}${{ (alertValue - currentStockPrice) | number:'1.2-2' }})
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Watchlist Selection -->
+    <div class="watchlist-section">
+      <div class="section-header">
+        <h3 class="section-title">Select Watchlist</h3>
+      </div>
+
+      <!-- Existing Watchlists -->
+      <div *ngIf="watchlists.length > 0" class="watchlists-selection">
+        <div class="watchlists-list">
+          <div
+            *ngFor="let watchlist of watchlists;"
+            class="watchlist-item"
+            [class.selected]="selectedWatchlistId === watchlist.id"
+            (click)="selectWatchlist(watchlist)">
+
+            <div class="watchlist-info">
+              <h4 class="watchlist-name">{{ watchlist.watchlistName }}</h4>
+              <div class="alert-badge">
+                <span class="alert-count">{{ watchlist.alertCount }}</span>
+                <span class="alert-label">{{ watchlist.alertCount === 1 ? 'alert' : 'alerts' }}</span>
+              </div>
+            </div>
+
+            <div class="select-indicator" *ngIf="selectedWatchlistId === watchlist.id">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="watchlists.length === 0 " class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3>No watchlists yet</h3>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-secondary" (click)="closePopup()">
+        Cancel
+      </button>
+      <button
+        class="btn btn-primary"
+        (click)="createAlert()"
+        [disabled]="!isFormValid()">
+        Create Alert
+      </button>
+    </div>
+  </div>
+</div>

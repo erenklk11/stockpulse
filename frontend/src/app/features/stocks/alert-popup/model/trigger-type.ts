@@ -1,0 +1,4 @@
+export enum TriggerType {
+  TO_PRICE = 'TO_PRICE',
+  PERCENTAGE_CHANGE_PRICE = 'PERCENTAGE_CHANGE_PRICE'
+}

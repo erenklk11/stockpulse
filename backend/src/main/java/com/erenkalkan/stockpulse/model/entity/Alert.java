@@ -27,12 +27,16 @@ public class Alert {
   @NotBlank(message = "Stock ticker is required")
   @Pattern(regexp = "^[A-Z]{1,5}$")
   @Column(name = "stock_ticker", nullable = false)
-  private String stockTicker;
+  private String symbol;
 
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "trigger_type", nullable = false)
   private TriggerType triggerType;
+
+  @NotNull
+  @Column(name = "alert_value", nullable = false)
+  private Long alertValue;
 
   @NotNull
   @ManyToOne

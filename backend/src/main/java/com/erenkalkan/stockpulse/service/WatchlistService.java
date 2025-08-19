@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class WatchlistService {
 
   private final WatchlistRepository watchlistRepository;
-  private final AlertService alertService;
   private final UserService userService;
 
 
@@ -108,5 +107,9 @@ public class WatchlistService {
             .toList();
 
     return watchlists;
+  }
+
+  public Optional<Watchlist> getWatchlist(Long id) {
+    return watchlistRepository.findById(id);
   }
 }

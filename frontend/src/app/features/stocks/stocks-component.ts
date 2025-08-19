@@ -11,6 +11,7 @@ import {NewsComponent} from '../news/news-component';
 import {CommonModule} from '@angular/common';
 import {StocksWebsocketService} from '../../core/services/stocks-websocket-service';
 import {Subscription} from 'rxjs';
+import {AlertPopupComponent} from './alert-popup/alert-popup-component';
 
 @Component({
   selector: 'app-stocks-component',
@@ -23,7 +24,8 @@ import {Subscription} from 'rxjs';
     FinancialsComponent,
     RecommendationsComponent,
     NewsComponent,
-    CommonModule
+    CommonModule,
+    AlertPopupComponent
   ],
   templateUrl: './stocks-component.html',
   styleUrl: './stocks-component.css'
@@ -31,9 +33,10 @@ import {Subscription} from 'rxjs';
 export class StocksComponent implements OnInit {
 
   stock!: Stock;
-  stockTicker: string = '';
+  symbol: string = '';
   stockPrice: number = 0;
   isLoading: boolean = false;
+  showWatchlistPopup: boolean = false;
   selectedSection: string = 'description';
   private subscriptions: Subscription[] = [];
 
@@ -64,10 +67,10 @@ export class StocksComponent implements OnInit {
 
   getStockData(): void {
 
-    this.stockTicker = new URLSearchParams(window.location.search).get('symbol') ?? '';
-    if (this.stockTicker != null && this.stockTicker.trim() !== '') {
+    this.symbol = new URLSearchParams(window.location.search).get('symbol') ?? '';
+    if (this.symbol != null && this.symbol.trim() !== '') {
       this.isLoading = true;
-      this.http.get<any>(environment.apiUrl + environment.endpoints.api.stock + `?symbol=${this.stockTicker}`,
+      this.http.get<any>(environment.apiUrl + environment.endpoints.api.stock + `?symbol=${this.symbol}`,
         {withCredentials: true}).subscribe({
         next: (response) => {
 
@@ -99,7 +102,7 @@ export class StocksComponent implements OnInit {
       console.log('Connection state:', state);
 
       if (state === 'CONNECTED') {
-        const symbol = this.stockTicker;
+        const symbol = this.symbol;
         this.stocksWebsocketService.subscribeToSymbol(symbol);
       }
     });
@@ -157,5 +160,19 @@ export class StocksComponent implements OnInit {
   updateStockPrice(data: any) {
       this.stockPrice = data.price;
       this.cdr.detectChanges();
+  }
+
+  openWatchlistsSection(): void {
+    this.showWatchlistPopup = true;
+  }
+
+  closeWatchlistPopup(): void {
+    this.showWatchlistPopup = false;
+  }
+
+  onWatchlistSelected(watchlist: any): void {
+    console.log('Stock added to watchlist:', watchlist);
+    alert(this.stock.data.name + " added to watchlist: " + watchlist);
+    this.showWatchlistPopup = false;
   }
 }

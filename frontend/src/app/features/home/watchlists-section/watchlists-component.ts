@@ -25,8 +25,7 @@ export class WatchlistsComponent implements OnInit {
               private watchlistService: WatchlistService) {}
 
   ngOnInit(): void {
-    this.watchlists = this.watchlistService.getAllWatchlists();
-    this.cdr.detectChanges();
+    this.getAllWatchlists();
   }
 
   toggleCreateForm(): void {
@@ -36,9 +35,39 @@ export class WatchlistsComponent implements OnInit {
     }
   }
 
+  getAllWatchlists(): void {
+    this.watchlistService.getAllWatchlists().subscribe({
+      next: (watchlists) => {
+        this.watchlists = watchlists ?? []; // fallback if null
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Error fetching watchlists:", err);
+        this.watchlists = [];
+      }
+    });
+  }
+
   createWatchlist(): void {
-    this.watchlists.push(this.watchlistService.createWatchlist(this.newWatchlistName));
-    this.cdr.detectChanges();
+    this.watchlistService.createWatchlist(this.newWatchlistName).subscribe({
+      next: (response: any) => {
+        if (response) {
+          const newWatchlist: Watchlist = response;
+          newWatchlist.alertCount = 0;
+          this.watchlists.push(newWatchlist);
+          this.cdr.detectChanges();
+        }
+        return null;
+      },
+      error: (error: any) => {
+        if (error.message) {
+          console.error("Error creating watchlist: " + error.message());
+        }
+        else {
+          console.error("Error creating watchlist");
+        }
+      }
+    });
   }
 
   onWatchlistClick(watchlist: Watchlist): void {
@@ -47,8 +76,25 @@ export class WatchlistsComponent implements OnInit {
   }
 
   deleteWatchlist(event: Event, watchlistId: number): void {
+
+    event.stopPropagation();
     this.watchlists = this.watchlists.filter(w => w.id !== watchlistId);
-    this.watchlistService.deleteWatchlist(event, watchlistId);
+
+    this.watchlistService.deleteWatchlist(event, watchlistId).subscribe({
+      next: (response: any) => {
+        if (response.deleted) {
+          alert(`Deleted watchlist with ID: ${watchlistId}`);
+        }
+      },
+      error: (error: any) => {
+        if (error.message) {
+          console.error("Error deleting watchlist: " + error.message());
+        }
+        else {
+          console.error("Error deleting watchlist");
+        }
+      }
+    });
   }
 
 }

@@ -6,7 +6,7 @@
 <!-- Loading State -->
 <div *ngIf="isLoading" class="loading-container">
   <div class="loading-spinner"></div>
-  <h2 class="loading-text">Loading {{ stockTicker }} data...</h2>
+  <h2 class="loading-text">Loading {{ symbol }} data...</h2>
   <p class="loading-subtext">Please wait while we fetch the latest information</p>
 </div>
 
@@ -51,9 +51,18 @@
         Recommendations
       </h3>
       <div class="add-to-watchlist-btn">
-        <button class="btn btn-primary">Add To Watchlist</button>
+        <button (click)="openWatchlistsSection()" class="btn btn-primary">Add To Watchlist</button>
       </div>
     </div>
+
+    <!-- Watchlist Popup -->
+    <app-alert-popup
+      *ngIf="showWatchlistPopup"
+      [symbol]="symbol"
+      [currentStockPrice]="stockPrice"
+      (selectedWatchlist)="onWatchlistSelected($event)"
+      (closeModal)="closeWatchlistPopup()">
+    </app-alert-popup>
 
     <div *ngIf="selectedSection === 'description'">
       <app-description-component [description]="stock.data.description"></app-description-component>
@@ -67,6 +76,6 @@
   </div>
 
   <div class="news-section">
-    <app-news-component [ticker]="stockTicker" ></app-news-component>
+    <app-news-component [ticker]="symbol" ></app-news-component>
   </div>
 </div>

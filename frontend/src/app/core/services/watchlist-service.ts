@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environments';
 import {Watchlist} from '../../features/home/watchlists-section/model/watchlist';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,69 +11,20 @@ export class WatchlistService {
 
   constructor(private http: HttpClient) {}
 
-  getAllWatchlists(): any {
-    this.http.get<any>(environment.apiUrl + environment.endpoints.watchlist.getAll,
-      {withCredentials: true}).subscribe({
-      next: (response) => {
-        if (response) {
-          return response;
-        }
-          return null;
-      },
-      error: (error) => {
-        if (error.message()) {
-          console.error("Could not get wishlists: " + error.message());
-        }
-        else {
-          console.error("Could not get wishlists");
-        }
-      }
+  getAllWatchlists(): Observable<Watchlist[]> {
+    return this.http.get<Watchlist[]>(environment.apiUrl + environment.endpoints.watchlist.getAll, {
+      withCredentials: true
     });
   }
 
   createWatchlist(newWatchlistName: string): any {
-
-    if (newWatchlistName && newWatchlistName.trim()) {
-      this.http.post<any>(environment.apiUrl + environment.endpoints.watchlist.create +
-        '?watchlistName=' + newWatchlistName, {}, {withCredentials: true}).subscribe({
-        next: (response) => {
-          if (response) {
-            const newWatchlist: Watchlist = response;
-            newWatchlist.alertCount = 0;
-            return newWatchlist;
-          }
-          return null;
-        },
-        error: (error) => {
-          if (error.message) {
-            console.error("Error creating watchlist: " + error.message());
-          }
-          else {
-            console.error("Error creating watchlist");
-          }
-        }
-      });
-    }
+    return this.http.post<any>(environment.apiUrl + environment.endpoints.watchlist.create +
+      '?watchlistName=' + newWatchlistName, {}, {withCredentials: true});
   }
 
-  deleteWatchlist(event: Event, watchlistId: number): void {
-    event.stopPropagation();
-
-    this.http.delete<any>(environment.apiUrl + environment.endpoints.watchlist.delete +
-      '?id=' + watchlistId, {withCredentials: true}).subscribe({
-      next: (response) => {
-        if (response.deleted) {}
-      },
-      error: (error) => {
-        if (error.message) {
-          console.error("Error deleting watchlist: " + error.message());
-        }
-        else {
-          console.error("Error deleting watchlist");
-        }
-      }
-    });
-    console.log('Deleted watchlist with ID:', watchlistId);
+  deleteWatchlist(event: Event, watchlistId: number): any {
+    return this.http.delete<any>(environment.apiUrl + environment.endpoints.watchlist.delete +
+      '?id=' + watchlistId, {withCredentials: true});
   }
 
 }
