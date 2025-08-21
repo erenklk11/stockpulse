@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AlertDTO} from '../../features/stocks/alert-popup/model/alert';
 import {environment} from '../../../environments/environments';
+import {Observable} from 'rxjs';
+import {Alert} from '../../features/watchlist/model/alert';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +17,9 @@ export class AlertService {
       alert, {withCredentials: true});
   }
 
-  deleteAlert(alertId: number): any {
+  deleteAlert(id: number): any {
     return this.http.delete<any>(environment.apiUrl + environment.endpoints.alert.delete +
-      `/${alertId}`, {withCredentials: true});
+      `/${id}`, {withCredentials: true});
   }
 
 }

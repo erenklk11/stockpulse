@@ -5,6 +5,8 @@ import com.erenkalkan.stockpulse.model.dto.StockDTO;
 import com.erenkalkan.stockpulse.model.dto.StockDataDTO;
 import com.erenkalkan.stockpulse.model.dto.StockFinancialsDTO;
 import com.erenkalkan.stockpulse.model.dto.StockRecommendationsDTO;
+import com.erenkalkan.stockpulse.model.entity.Stock;
+import com.erenkalkan.stockpulse.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +36,7 @@ public class StocksService {
   @Value("${app.api.polygon.key}")
   private String polygonKey;
 
+  private final StockRepository stockRepository;
   private static final long CACHE_TTL_MILLIS = 24 * 60 * 60 * 1000; // 1 day
   private final ConcurrentHashMap<String, CacheEntry> cache = new ConcurrentHashMap<>();
 
@@ -45,6 +48,10 @@ public class StocksService {
       this.data = data;
       this.timestamp = timestamp;
     }
+  }
+
+  public Stock save(Stock stock) {
+    return stockRepository.save(stock);
   }
 
   public StockDTO getStock(String symbol) {
@@ -260,6 +267,29 @@ public class StocksService {
     }
     catch (Exception e) {
       throw new RestClientException("Failed to fetch stock recommendations from Finnhub API", e);
+    }
+  }
+
+  public Double fetchStockClosePrice(String symbol) {
+    if (symbol == null || symbol.trim().isEmpty()) {
+      throw new InvalidInputException("Stock symbol cannot be null or empty");
+    }
+    String apiUrl = finnhubUrl + "quote?symbol=" + symbol + "&token=" + finnhubKey;
+
+    try {
+      Map<String, Double> result = restClient.get()
+              .uri(apiUrl)
+              .retrieve()
+              .body(Map.class);
+
+      if (result != null && !result.isEmpty()) {
+        return result.get("pc");
+      }
+      log.warn("Empty or null response from Finnhub API for symbol: {}", symbol);
+      return (double) 0;
+    }
+    catch (Exception e) {
+      throw new RestClientException("Failed to fetch stock close price from Finnhub API", e);
     }
   }
 

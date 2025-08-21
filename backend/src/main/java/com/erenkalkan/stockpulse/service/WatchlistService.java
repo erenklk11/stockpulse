@@ -112,4 +112,29 @@ public class WatchlistService {
   public Optional<Watchlist> getWatchlist(Long id) {
     return watchlistRepository.findById(id);
   }
+
+  public Watchlist getWatchlist(Long id, Authentication authentication) {
+
+    if (id == null) {
+      throw new InvalidInputException("Watchlist ID cannot be null");
+    }
+
+    Optional<User> optionalUser = userService.findByEmail(authentication.getName());
+    if (optionalUser.isEmpty()) {
+      throw new UserNotFoundException("User with email: " + authentication.getName() + " was not found");
+    }
+    User user = optionalUser.get();
+
+    Optional<Watchlist> optionalWatchlist = watchlistRepository.findById(id);
+    if (optionalWatchlist.isEmpty()) {
+      throw new ResourceNotFoundException("Watchlist with ID: " + id + " was not found");
+    }
+    Watchlist watchlist = optionalWatchlist.get();
+
+    if (!watchlist.getUser().getId().equals(user.getId())) {
+      throw new UnauthorizedAccessException("User is not authorized to delete this watchlist");
+    }
+
+    return watchlist;
+  }
 }

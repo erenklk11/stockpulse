@@ -24,10 +24,10 @@ public class Alert {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @NotBlank(message = "Stock ticker is required")
-  @Pattern(regexp = "^[A-Z]{1,5}$")
-  @Column(name = "stock_ticker", nullable = false)
-  private String symbol;
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "stock", nullable = false)
+  private Stock stock;
 
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -37,6 +37,13 @@ public class Alert {
   @NotNull
   @Column(name = "alert_value", nullable = false)
   private Long alertValue;
+
+  @Column(name = "target_value")
+  private Long targetValue;
+
+  @Builder.Default
+  @Column(name = "is_triggered", nullable = false)
+  private boolean isTriggered = false;
 
   @NotNull
   @ManyToOne
@@ -49,6 +56,10 @@ public class Alert {
 
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
+
+  @Builder.Default
+  @Column(name = "triggered_at")
+  private LocalDateTime triggeredAt = null;
 
   @PrePersist
   protected void onCreate() {

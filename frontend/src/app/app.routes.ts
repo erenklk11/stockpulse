@@ -12,6 +12,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/settings/settings-component').then(m => m.SettingsComponent) },
   { path: 'stocks',
     loadComponent: () => import('./features/stocks/stocks-component').then(m => m.StocksComponent) },
+  { path: 'watchlist/:id',
+    loadComponent: () => import('./features/watchlist/watchlist-component').then(m => m.WatchlistComponent) },
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/auth/login' }
 ];

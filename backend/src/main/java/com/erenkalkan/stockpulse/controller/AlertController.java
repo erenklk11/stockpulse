@@ -26,7 +26,7 @@ public class AlertController {
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
-  @DeleteMapping("/delete")
+  @DeleteMapping("/delete/{id}")
   public ResponseEntity<Map<String, Boolean>> deleteAlert(@PathVariable Long id, Authentication authentication) {
     Map<String, Boolean> response = new HashMap<>();
     response.put("deleted", alertService.deleteAlert(id, authentication));

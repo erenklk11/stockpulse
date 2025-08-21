@@ -473,6 +473,18 @@
   margin: 0 0 20px 0;
 }
 
+/* Hide number input spinners for Chrome, Safari, Edge */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide number input spinners for Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environments';
-import {Watchlist} from '../../features/home/watchlists-section/model/watchlist';
+import {WatchlistDTO} from '../../features/home/watchlists-section/model/watchlist';
 import {Observable} from 'rxjs';
+import {Watchlist} from '../../features/watchlist/model/watchlist';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,15 @@ export class WatchlistService {
 
   constructor(private http: HttpClient) {}
 
-  getAllWatchlists(): Observable<Watchlist[]> {
-    return this.http.get<Watchlist[]>(environment.apiUrl + environment.endpoints.watchlist.getAll, {
+  getWatchlist(id: number): Observable<Watchlist> {
+    return this.http.get<any>(environment.apiUrl + environment.endpoints.watchlist.get +
+      `/${id}`, {
+      withCredentials: true
+    });
+  }
+
+  getAllWatchlists(): Observable<WatchlistDTO[]> {
+    return this.http.get<WatchlistDTO[]>(environment.apiUrl + environment.endpoints.watchlist.getAll, {
       withCredentials: true
     });
   }
@@ -22,9 +30,9 @@ export class WatchlistService {
       '?watchlistName=' + newWatchlistName, {}, {withCredentials: true});
   }
 
-  deleteWatchlist(event: Event, watchlistId: number): any {
+  deleteWatchlist(watchlistId: number): any {
     return this.http.delete<any>(environment.apiUrl + environment.endpoints.watchlist.delete +
-      '?id=' + watchlistId, {withCredentials: true});
+      `/${watchlistId}`, {withCredentials: true});
   }
 
 }

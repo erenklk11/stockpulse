@@ -1,10 +1,9 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
 import {AlertDTO} from './model/alert';
 import {TriggerType} from './model/trigger-type';
-import {Watchlist} from '../../home/watchlists-section/model/watchlist';
+import {WatchlistDTO} from '../../home/watchlists-section/model/watchlist';
 import {WatchlistService} from '../../../core/services/watchlist-service';
 import {AlertService} from '../../../core/services/alert-service';
 
@@ -21,20 +20,20 @@ import {AlertService} from '../../../core/services/alert-service';
 export class AlertPopupComponent implements OnInit {
 
   @Input() symbol: string = '';
-  @Input() currentStockPrice: number | null = null;
-  @Output() selectedWatchlist = new EventEmitter<Watchlist>();
+  @Input() companyName: string = '';
+  @Input() currentStockPrice!: number;
+  @Output() selectedWatchlist = new EventEmitter<WatchlistDTO>();
   @Output() closeModal = new EventEmitter<void>();
 
   triggerType: TriggerType = TriggerType.TO_PRICE;
   alertValue!: number;
 
-  watchlists: Watchlist[] = [];
+  watchlists: WatchlistDTO[] = [];
   selectedWatchlistId: number | null = null;
 
   public TriggerType = TriggerType;
 
   constructor(
-    private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private watchlistService: WatchlistService,
     private alertService: AlertService
@@ -49,9 +48,17 @@ export class AlertPopupComponent implements OnInit {
   }
 
   isFormValid(): boolean {
+    if (this.triggerType === TriggerType.TO_PRICE) {
+      return !!(
+        this.alertValue &&
+        this.alertValue > 0 &&
+        this.selectedWatchlistId &&
+        this.symbol
+      );
+    }
     return !!(
       this.alertValue &&
-      this.alertValue > 0 &&
+      this.alertValue > -100 &&
       this.selectedWatchlistId &&
       this.symbol
     );
@@ -74,13 +81,16 @@ export class AlertPopupComponent implements OnInit {
     if (!this.isFormValid()) return;
 
     const alertDTO: AlertDTO = {
-      symbol: this.symbol,
+      stock: {
+        symbol: this.symbol,
+        companyName: this.companyName,
+        currentPrice: this.currentStockPrice
+      },
       triggerType: this.triggerType,
       alertValue: this.alertValue,
+      targetValue: this.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE ? this.calculateTargetValue(this.alertValue): this.alertValue,
       watchlistId: this.selectedWatchlistId!
     };
-
-    console.log(alertDTO);
 
     this.alertService.createAlert(alertDTO).subscribe({
       next: (response: any) => {
@@ -99,6 +109,17 @@ export class AlertPopupComponent implements OnInit {
         }
       }
     });
+  }
+
+  calculateTargetValue(percentage: number): number {
+
+    const multiplier = percentage / 100;
+    if (percentage < 0) {
+      return this.currentStockPrice - (this.currentStockPrice * multiplier);
+    }
+    else {
+      return this.currentStockPrice + (this.currentStockPrice * multiplier);
+    }
   }
 
   closePopup(): void {

@@ -1,9 +1,10 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Watchlist} from './model/watchlist';
+import {WatchlistDTO} from './model/watchlist';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {WatchlistService} from '../../../core/services/watchlist-service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-watchlist-component',
@@ -17,12 +18,14 @@ import {WatchlistService} from '../../../core/services/watchlist-service';
 })
 export class WatchlistsComponent implements OnInit {
 
-  watchlists: Watchlist[] = [];
+  watchlists: WatchlistDTO[] = [];
   newWatchlistName: string = '';
   isCreating: boolean = false;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,
-              private watchlistService: WatchlistService) {}
+  constructor(private http: HttpClient,
+              private cdr: ChangeDetectorRef,
+              private watchlistService: WatchlistService,
+              private router: Router) {}
 
   ngOnInit(): void {
     this.getAllWatchlists();
@@ -52,7 +55,7 @@ export class WatchlistsComponent implements OnInit {
     this.watchlistService.createWatchlist(this.newWatchlistName).subscribe({
       next: (response: any) => {
         if (response) {
-          const newWatchlist: Watchlist = response;
+          const newWatchlist: WatchlistDTO = response;
           newWatchlist.alertCount = 0;
           this.watchlists.push(newWatchlist);
           this.cdr.detectChanges();
@@ -70,8 +73,8 @@ export class WatchlistsComponent implements OnInit {
     });
   }
 
-  onWatchlistClick(watchlist: Watchlist): void {
-    // TODO: Navigate to watchlist details or emit event
+  onWatchlistClick(watchlist: WatchlistDTO): void {
+    this.router.navigate([`/watchlist/${watchlist.id}`]);
     console.log('Clicked watchlist:', watchlist);
   }
 
@@ -80,7 +83,7 @@ export class WatchlistsComponent implements OnInit {
     event.stopPropagation();
     this.watchlists = this.watchlists.filter(w => w.id !== watchlistId);
 
-    this.watchlistService.deleteWatchlist(event, watchlistId).subscribe({
+    this.watchlistService.deleteWatchlist(watchlistId).subscribe({
       next: (response: any) => {
         if (response.deleted) {
           alert(`Deleted watchlist with ID: ${watchlistId}`);
@@ -96,5 +99,4 @@ export class WatchlistsComponent implements OnInit {
       }
     });
   }
-
 }

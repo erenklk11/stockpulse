@@ -12,6 +12,7 @@ import {CommonModule} from '@angular/common';
 import {StocksWebsocketService} from '../../core/services/stocks-websocket-service';
 import {Subscription} from 'rxjs';
 import {AlertPopupComponent} from './alert-popup/alert-popup-component';
+import {StocksService} from '../../core/services/stocks-service';
 
 @Component({
   selector: 'app-stocks-component',
@@ -41,7 +42,8 @@ export class StocksComponent implements OnInit {
   private subscriptions: Subscription[] = [];
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,
-              private stocksWebsocketService: StocksWebsocketService) {}
+              private stocksWebsocketService: StocksWebsocketService,
+              private stocksService: StocksService) {}
 
   getFirstName(): string {
     return sessionStorage.getItem("firstName") || "";
@@ -50,6 +52,8 @@ export class StocksComponent implements OnInit {
   ngOnInit(): void {
 
     this.getStockData();
+    // Get last close price just in case the market is closed and the websocket connection doesn't receive any live prices
+    this.getStockClosePrice(this.symbol);
     this.getLiveStockPrice();
   }
 
@@ -93,6 +97,20 @@ export class StocksComponent implements OnInit {
         }
       });
     }
+  }
+
+  getStockClosePrice(symbol: string): void {
+    this.stocksService.getStockClosePrice(symbol).subscribe({
+      next: (response) => {
+        if (response.price) {
+          this.stockPrice = response.price;
+          this.cdr.detectChanges();
+        }
+      },
+      error: (error) => {
+        console.error(`Error fetching stock close price for: ${this.symbol}`);
+      }
+    });
   }
 
   getLiveStockPrice(): void {

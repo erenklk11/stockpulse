@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/stocks")
@@ -25,5 +28,12 @@ public class StocksController {
   @GetMapping("/stock")
   public ResponseEntity<StockDTO> getStock(@RequestParam String symbol) {
     return ResponseEntity.ok(stocksService.getStock(symbol));
+  }
+
+  @GetMapping("/stock-close-price")
+  public ResponseEntity<Map<String, Double>> getStockClosePrice(@RequestParam String symbol) {
+    Map<String, Double> response = new HashMap<>();
+    response.put("price", stocksService.fetchStockClosePrice(symbol));
+    return ResponseEntity.ok(response);
   }
 }

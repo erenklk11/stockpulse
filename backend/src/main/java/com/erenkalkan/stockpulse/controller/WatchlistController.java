@@ -26,11 +26,16 @@ public class WatchlistController {
     return ResponseEntity.status(HttpStatus.CREATED).body(watchlistService.createWatchlist(watchlistName, authentication));
   }
 
-  @DeleteMapping("/delete")
-  public ResponseEntity<Map<String, Boolean>> deleteWatchlist(@RequestParam Long id, Authentication authentication) {
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<Map<String, Boolean>> deleteWatchlist(@PathVariable Long id, Authentication authentication) {
     Map<String, Boolean> response = new HashMap<>();
     response.put("deleted", watchlistService.deleteWatchlist(id, authentication));
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Watchlist> getWatchlist(@PathVariable Long id, Authentication authentication) {
+    return ResponseEntity.ok(watchlistService.getWatchlist(id, authentication));
   }
 
   @GetMapping("/getAll")

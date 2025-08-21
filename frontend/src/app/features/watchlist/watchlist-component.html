@@ -1,0 +1,125 @@
+<div class="watchlist-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading watchlist...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && watchlist">
+    <!-- Header Section -->
+    <div class="header">
+      <div class="header-left">
+        <button class="back-btn" (click)="goBack()" title="Back to watchlists">
+          <i class="icon">←</i>
+        </button>
+        <div class="watchlist-info">
+          <h2 class="title">{{ watchlist?.watchlistName }}</h2>
+          <div class="alert-summary">
+            <span class="alert-count">{{ alerts.length }}</span>
+            <span class="alert-label">{{ alerts.length === 1 ? 'alert' : 'alerts' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts List -->
+    <div *ngIf="alerts.length > 0" class="alerts-container">
+      <div class="alerts-header">
+        <h3>Stock Alerts</h3>
+        <div class="filter-tabs">
+          <button class="tab-btn active">All ({{ alerts.length }})</button>
+          <button class="tab-btn">Active ({{ getNotTriggeredCount() }})</button>
+          <button class="tab-btn">Triggered ({{ getTriggeredCount() }})</button>
+        </div>
+      </div>
+
+      <div class="alerts-list">
+        <div
+          *ngFor="let alert of alerts"
+          class="alert-card"
+          [class]="getAlertStatusClass(alert)">
+
+          <div class="alert-header">
+            <div class="stock-info">
+              <h4 class="symbol">{{ alert.stock.symbol }}</h4>
+            </div>
+            <div class="alert-status">
+              <span class="status-badge" [class]="getAlertStatusClass(alert)">
+                {{ getAlertStatusLabel(alert) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="alert-body">
+            <div class="alert-details">
+              <div class="detail-item">
+                <span class="label">Alert Type:</span>
+                <span class="value">{{ alert.triggerType === TriggerType.TO_PRICE ? 'Target Price' : 'Percentage Change' }}</span>
+              </div>
+              <div class="detail-item">
+                <span *ngIf="alert.triggerType === TriggerType.TO_PRICE" class="label">Target:</span>
+                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="label">Alert Value:</span>
+                <span *ngIf="alert.triggerType === TriggerType.TO_PRICE" class="value target-value">{{ formatCurrency(alert.alertValue) }}</span>
+                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="value target-value">{{ alert.alertValue }}%</span>
+              </div>
+              <div *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="detail-item">
+                <span class="label">Target Value</span>
+                <span class="value">{{ alert.targetValue }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Current:</span>
+                <span class="value current-value"
+                      [class.above-target]="alert.stock.currentPrice > alert.alertValue"
+                      [class.below-target]="alert.stock.currentPrice < alert.alertValue">
+                  {{ formatCurrency(alert.stock.currentPrice) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.TO_PRICE">
+              <div class="progress-bar">
+                <div class="progress-fill"
+                     [style.width.%]="(alert.stock.currentPrice / alert.alertValue) * 100"></div>
+              </div>
+              <span class="progress-text">
+                {{ ((alert.stock.currentPrice / alert.alertValue) * 100).toFixed(1) }}% of target
+              </span>
+            </div>
+            <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">
+              <div class="progress-bar">
+                <div class="progress-fill"
+                     [style.width.%]="(alert.stock.currentPrice / alert.targetValue) * 100"></div>
+              </div>
+              <span class="progress-text">
+                {{ ((alert.stock.currentPrice / alert.targetValue) * 100).toFixed(1) }}% of target
+              </span>
+            </div>
+          </div>
+
+          <div class="alert-footer">
+            <div class="timestamps">
+              <span class="created-date">Created: {{ formatDate(alert.createdAt) }}</span>
+              <span *ngIf="alert.triggeredAt" class="triggered-date">
+                Triggered: {{ formatDate(alert.triggeredAt) }}
+              </span>
+            </div>
+
+            <button
+              class="delete-btn"
+              (click)="deleteAlert($event, alert.id)"
+              title="Delete alert">
+              <i class="delete-icon">×</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="alerts.length === 0" class="empty-state">
+      <div class="empty-icon">🔔</div>
+      <h3>No alerts yet</h3>
+    </div>
+  </div>
+</div>

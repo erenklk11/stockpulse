@@ -59,6 +59,7 @@
     <app-alert-popup
       *ngIf="showWatchlistPopup"
       [symbol]="symbol"
+      [companyName]="stock.data.name"
       [currentStockPrice]="stockPrice"
       (selectedWatchlist)="onWatchlistSelected($event)"
       (closeModal)="closeWatchlistPopup()">

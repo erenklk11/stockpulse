@@ -5,6 +5,7 @@ import com.erenkalkan.stockpulse.model.dto.CreateAlertRequestDTO;
 import com.erenkalkan.stockpulse.model.entity.Alert;
 import com.erenkalkan.stockpulse.model.entity.User;
 import com.erenkalkan.stockpulse.model.entity.Watchlist;
+import com.erenkalkan.stockpulse.model.enums.TriggerType;
 import com.erenkalkan.stockpulse.repository.AlertRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,16 +20,17 @@ import java.util.Optional;
 public class AlertService {
 
   private final AlertRepository alertRepository;
+  private final StocksService stocksService;
   private final WatchlistService watchlistService;
   private final UserService userService;
 
 
   public Alert save(Alert alert) {
     try {
-      log.debug("Attempting to save alert with symbol: {}", alert.getSymbol());
+      log.debug("Attempting to save alert with symbol: {}", alert.getStock().getSymbol());
       return alertRepository.save(alert);
     } catch (Exception e) {
-      log.error("Unexpected error while saving alert: {}", alert.getSymbol(), e);
+      log.error("Unexpected error while saving alert: {}", alert.getStock().getSymbol(), e);
       throw new DatabaseOperationException("Failed to save alert to database: " + e.getMessage(), e);
     }
   }
@@ -59,12 +61,28 @@ public class AlertService {
     }
     Watchlist watchlist = optionalWatchlist.get();
 
-    Alert alert = Alert.builder()
-            .symbol(request.getSymbol())
-            .triggerType(request.getTriggerType())
-            .alertValue(request.getAlertValue())
-            .watchlist(watchlist)
-            .build();
+    stocksService.save(request.getStock());
+
+    Alert alert;
+    // If TriggerType.PERCENTAGE_CHANGE_PRICE, the alert value is the percentage value.
+    // If TriggerType.TO_PRICE, the alert value is the target value the user wants the stock to rise/drop to.
+    if (request.getTriggerType() == TriggerType.PERCENTAGE_CHANGE_PRICE) {
+      alert = Alert.builder()
+              .stock(request.getStock())
+              .triggerType(request.getTriggerType())
+              .alertValue(request.getAlertValue())
+              .targetValue(request.getTargetValue())
+              .watchlist(watchlist)
+              .build();
+    }
+    else {
+      alert = Alert.builder()
+              .stock(request.getStock())
+              .triggerType(request.getTriggerType())
+              .alertValue(request.getAlertValue())
+              .watchlist(watchlist)
+              .build();
+    }
 
     save(alert);
 
