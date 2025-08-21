@@ -67,7 +67,7 @@ export class WatchlistComponent implements OnInit {
       next: (response: any) => {
         if (response.deleted) {
           alert(`Alert has been deleted`);
-          this.goBack();
+          this.alerts.filter(a => a.id !== alertId);
         }
       },
       error: (error: any) => {

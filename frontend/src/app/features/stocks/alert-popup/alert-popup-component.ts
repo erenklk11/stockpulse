@@ -83,8 +83,7 @@ export class AlertPopupComponent implements OnInit {
     const alertDTO: AlertDTO = {
       stock: {
         symbol: this.symbol,
-        companyName: this.companyName,
-        currentPrice: this.currentStockPrice
+        companyName: this.companyName
       },
       triggerType: this.triggerType,
       alertValue: this.alertValue,
@@ -114,12 +113,7 @@ export class AlertPopupComponent implements OnInit {
   calculateTargetValue(percentage: number): number {
 
     const multiplier = percentage / 100;
-    if (percentage < 0) {
-      return this.currentStockPrice - (this.currentStockPrice * multiplier);
-    }
-    else {
-      return this.currentStockPrice + (this.currentStockPrice * multiplier);
-    }
+    return this.currentStockPrice + (this.currentStockPrice * multiplier);
   }
 
   closePopup(): void {

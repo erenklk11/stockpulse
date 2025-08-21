@@ -24,7 +24,4 @@ public class Stock {
 
   @Column(name = "company_name", nullable = false)
   private String companyName;
-
-  @Column(name = "current_price")
-  private Double currentPrice;
 }

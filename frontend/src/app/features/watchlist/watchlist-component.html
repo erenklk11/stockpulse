@@ -14,7 +14,7 @@
           <i class="icon">←</i>
         </button>
         <div class="watchlist-info">
-          <h2 class="title">{{ watchlist?.watchlistName }}</h2>
+          <h2 class="title">{{ watchlist.watchlistName }}</h2>
           <div class="alert-summary">
             <span class="alert-count">{{ alerts.length }}</span>
             <span class="alert-label">{{ alerts.length === 1 ? 'alert' : 'alerts' }}</span>
@@ -64,7 +64,7 @@
                 <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="value target-value">{{ alert.alertValue }}%</span>
               </div>
               <div *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="detail-item">
-                <span class="label">Target Value</span>
+                <span class="label">Target</span>
                 <span class="value">{{ alert.targetValue }}</span>
               </div>
               <div class="detail-item">
@@ -80,19 +80,19 @@
             <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.TO_PRICE">
               <div class="progress-bar">
                 <div class="progress-fill"
-                     [style.width.%]="(alert.stock.currentPrice / alert.alertValue) * 100"></div>
+                     [style.width.%]="(alert.alertValue / alert.stock.currentPrice) * 100"></div>
               </div>
               <span class="progress-text">
-                {{ ((alert.stock.currentPrice / alert.alertValue) * 100).toFixed(1) }}% of target
+                {{ ((alert.alertValue / alert.stock.currentPrice) * 100).toFixed(1) }}% of target
               </span>
             </div>
             <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">
               <div class="progress-bar">
                 <div class="progress-fill"
-                     [style.width.%]="(alert.stock.currentPrice / alert.targetValue) * 100"></div>
+                     [style.width.%]="(alert.targetValue / alert.stock.currentPrice) * 100"></div>
               </div>
               <span class="progress-text">
-                {{ ((alert.stock.currentPrice / alert.targetValue) * 100).toFixed(1) }}% of target
+                {{ ((alert.targetValue / alert.stock.currentPrice) * 100).toFixed(1) }}% of target
               </span>
             </div>
           </div>
