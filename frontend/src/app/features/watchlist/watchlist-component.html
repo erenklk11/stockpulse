@@ -69,9 +69,14 @@
               </div>
               <div class="detail-item">
                 <span class="label">Current:</span>
-                <span class="value current-value"
+                <span *ngIf="alert.triggerType === TriggerType.TO_PRICE" class="value current-value"
                       [class.above-target]="alert.stock.currentPrice > alert.alertValue"
                       [class.below-target]="alert.stock.currentPrice < alert.alertValue">
+                  {{ formatCurrency(alert.stock.currentPrice) }}
+                </span>
+                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="value current-value"
+                      [class.above-target]="alert.stock.currentPrice > alert.targetValue"
+                      [class.below-target]="alert.stock.currentPrice < alert.targetValue">
                   {{ formatCurrency(alert.stock.currentPrice) }}
                 </span>
               </div>
@@ -80,19 +85,19 @@
             <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.TO_PRICE">
               <div class="progress-bar">
                 <div class="progress-fill"
-                     [style.width.%]="(alert.alertValue / alert.stock.currentPrice) * 100"></div>
+                     [style.width.%]="calculateProgress(alert.alertValue, alert.stock.currentPrice)"></div>
               </div>
               <span class="progress-text">
-                {{ ((alert.alertValue / alert.stock.currentPrice) * 100).toFixed(1) }}% of target
+                {{ calculateProgress(alert.alertValue, alert.stock.currentPrice).toFixed(1) }}% of target
               </span>
             </div>
             <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">
               <div class="progress-bar">
                 <div class="progress-fill"
-                     [style.width.%]="(alert.targetValue / alert.stock.currentPrice) * 100"></div>
+                     [style.width.%]="calculateProgress(alert.targetValue, alert.stock.currentPrice)"></div>
               </div>
               <span class="progress-text">
-                {{ ((alert.targetValue / alert.stock.currentPrice) * 100).toFixed(1) }}% of target
+                {{ (calculateProgress(alert.targetValue, alert.stock.currentPrice)).toFixed(1) }}% of target
               </span>
             </div>
           </div>

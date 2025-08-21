@@ -41,7 +41,8 @@ export class StocksComponent implements OnInit {
   selectedSection: string = 'description';
   private subscriptions: Subscription[] = [];
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,
+  constructor(private http: HttpClient,
+              private cdr: ChangeDetectorRef,
               private stocksWebsocketService: StocksWebsocketService,
               private stocksService: StocksService) {}
 
@@ -52,7 +53,7 @@ export class StocksComponent implements OnInit {
   ngOnInit(): void {
 
     this.getStockData();
-    // Get last close price just in case the market is closed and the websocket connection doesn't receive any live prices
+    // Getting last close price just in case the market is closed and the websocket connection doesn't receive any live prices
     this.getStockClosePrice(this.symbol);
     this.getLiveStockPrice();
   }
