@@ -35,10 +35,10 @@ public class Alert {
   @Column(name = "trigger_type", nullable = false)
   private TriggerType triggerType;
 
-  @NotNull
   @Column(name = "percentage_value")
   private Integer percentageValue;
 
+  @NotNull
   @Column(name = "target_value", nullable = false)
   private Long targetValue;
 

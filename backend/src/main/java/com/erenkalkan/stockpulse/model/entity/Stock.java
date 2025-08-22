@@ -19,7 +19,7 @@ public class Stock {
   private Long id;
 
   @Pattern(regexp = "^[A-Z]{1,5}$")
-  @Column(name = "symbol", nullable = false)
+  @Column(name = "symbol", nullable = false, unique = true)
   private String symbol;
 
   @Column(name = "company_name", nullable = false)

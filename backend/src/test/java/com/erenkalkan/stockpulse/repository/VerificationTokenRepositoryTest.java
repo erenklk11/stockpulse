@@ -18,7 +18,6 @@ class VerificationTokenRepositoryTest {
 
   @Autowired
   private VerificationTokenRepository verificationTokenRepository;
-
   @Autowired
   private UserRepository userRepository;
 
@@ -72,7 +71,7 @@ class VerificationTokenRepositoryTest {
     Optional<VerificationToken> result = verificationTokenRepository.findByToken(notExistingToken);
 
     // Assert
-    assertFalse(result.isPresent());
+    assertTrue(result.isEmpty());
   }
 
 }

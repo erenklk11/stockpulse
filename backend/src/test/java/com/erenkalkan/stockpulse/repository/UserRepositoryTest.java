@@ -54,7 +54,7 @@ class UserRepositoryTest {
     Optional<User> result = userRepository.findByEmail("nonexistent@email.com");
 
     // Assert
-    assertFalse(result.isPresent(), "User should not be found");
+    assertTrue(result.isEmpty(), "User should not be found");
   }
 
   @Test
