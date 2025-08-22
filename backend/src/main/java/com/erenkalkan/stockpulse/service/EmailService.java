@@ -11,6 +11,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -56,13 +58,15 @@ public class EmailService {
       mail.setFrom(from);
       mail.setTo(to);
 
-      mail.setText(String.format("""
+      mail.setSubject(String.format("Your Alert for %s has been triggered!", alert.getStock().getSymbol()));
+
+      mail.setText(String.format(Locale.US,"""
               Hey %s,
               We would like to inform you about your Alert for the stock: %s
               Price is now %s your target of %.2f
               """, user.getFirstName(),
               alert.getStock().getSymbol(),
-              alert.getCondition().toString().toLowerCase(), alert.getTargetValue()));
+              alert.getCondition().toString().toLowerCase(), alert.getTargetValue().doubleValue()));
 
       sender.send(mail);
     }
