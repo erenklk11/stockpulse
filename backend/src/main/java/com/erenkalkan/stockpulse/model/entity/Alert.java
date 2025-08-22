@@ -1,5 +1,6 @@
 package com.erenkalkan.stockpulse.model.entity;
 
+import com.erenkalkan.stockpulse.model.enums.ConditionType;
 import com.erenkalkan.stockpulse.model.enums.TriggerType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -35,11 +36,14 @@ public class Alert {
   private TriggerType triggerType;
 
   @NotNull
-  @Column(name = "alert_value", nullable = false)
-  private Long alertValue;
+  @Column(name = "percentage_value")
+  private Integer percentageValue;
 
-  @Column(name = "target_value")
+  @Column(name = "target_value", nullable = false)
   private Long targetValue;
+
+  @Column(name = "condition")
+  private ConditionType condition;
 
   @Builder.Default
   @Column(name = "is_triggered", nullable = false)

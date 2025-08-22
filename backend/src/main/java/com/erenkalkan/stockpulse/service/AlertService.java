@@ -3,6 +3,7 @@ package com.erenkalkan.stockpulse.service;
 import com.erenkalkan.stockpulse.exception.*;
 import com.erenkalkan.stockpulse.model.dto.CreateAlertRequestDTO;
 import com.erenkalkan.stockpulse.model.entity.Alert;
+import com.erenkalkan.stockpulse.model.entity.Stock;
 import com.erenkalkan.stockpulse.model.entity.User;
 import com.erenkalkan.stockpulse.model.entity.Watchlist;
 import com.erenkalkan.stockpulse.model.enums.TriggerType;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -46,6 +48,19 @@ public class AlertService {
     }
   }
 
+  public List<Alert> findAllBySymbol(String symbol) {
+    if (symbol == null || symbol.trim().isEmpty()) {
+      throw new InvalidInputException("Stock symbol cannot be null");
+    }
+
+    Optional<Stock> stock = stocksService.findBySymbol(symbol);
+    if (stock.isEmpty()) {
+      log.warn("Stock {} could not have been found. Returning empty Alerts list", symbol);
+      return List.of();
+    }
+    return alertRepository.findAllByStock(stock.get());
+  }
+
   public boolean createAlert(CreateAlertRequestDTO request, Authentication authentication) {
 
     log.info(request.toString());
@@ -70,7 +85,7 @@ public class AlertService {
       alert = Alert.builder()
               .stock(request.getStock())
               .triggerType(request.getTriggerType())
-              .alertValue(request.getAlertValue())
+              .percentageValue(request.getPercentageValue())
               .targetValue(request.getTargetValue())
               .watchlist(watchlist)
               .build();
@@ -79,7 +94,7 @@ public class AlertService {
       alert = Alert.builder()
               .stock(request.getStock())
               .triggerType(request.getTriggerType())
-              .alertValue(request.getAlertValue())
+              .targetValue(request.getTargetValue())
               .watchlist(watchlist)
               .build();
     }

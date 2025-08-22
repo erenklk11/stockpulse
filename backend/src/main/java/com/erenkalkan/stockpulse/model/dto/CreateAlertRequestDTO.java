@@ -18,8 +18,8 @@ public class CreateAlertRequestDTO {
   private Stock stock;
   @NotNull
   private TriggerType triggerType;
+  private Integer percentageValue;
   @NotNull
-  private Long alertValue;
   private Long targetValue;
   @NotNull
   private Long watchlistId;

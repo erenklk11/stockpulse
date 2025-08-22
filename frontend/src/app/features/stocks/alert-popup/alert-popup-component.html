@@ -53,13 +53,20 @@
         </h3>
         <div class="value-input-group">
           <span class="input-prefix" *ngIf="triggerType === TriggerType.TO_PRICE">$</span>
-          <input
+          <input *ngIf="triggerType === TriggerType.TO_PRICE"
             type="number"
             class="value-input"
-            [placeholder]="triggerType === TriggerType.TO_PRICE ? 'e.g., 150.00' : 'e.g., 5.5'"
-            [(ngModel)]="alertValue"
-            [step]="triggerType === TriggerType.TO_PRICE ? '0.01' : '0.1'"
-            [min]="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE ? '-100' : '0'">
+            [placeholder]="'e.g., 150.00'"
+            [(ngModel)]="targetValue"
+            [step]="'0.01'"
+            [min]="'0'">
+          <input *ngIf="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE"
+            type="number"
+            class="value-input"
+            [placeholder]="'e.g., 5.5'"
+            [(ngModel)]="percentageValue"
+            [step]="'0.1'"
+            [min]="'-100'">
           <span class="input-suffix" *ngIf="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">%</span>
         </div>
         <small class="input-help" *ngIf="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">
@@ -73,10 +80,16 @@
           <span class="label">Current Price:</span>
           <span class="price">${{ currentStockPrice | number:'1.2-2' }}</span>
         </div>
-        <div class="price-difference" *ngIf="triggerType === TriggerType.TO_PRICE && alertValue">
-          <span class="difference" [class.positive]="alertValue > currentStockPrice" [class.negative]="alertValue < currentStockPrice">
-            {{ alertValue > currentStockPrice ? '+' : '' }}{{ ((alertValue - currentStockPrice) / currentStockPrice * 100) | number:'1.1-1' }}%
-            ({{ alertValue > currentStockPrice ? '+' : '' }}${{ (alertValue - currentStockPrice) | number:'1.2-2' }})
+        <div class="price-difference" *ngIf="triggerType === TriggerType.TO_PRICE && targetValue">
+          <span class="difference" [class.positive]="targetValue > currentStockPrice" [class.negative]="targetValue < currentStockPrice">
+            {{ targetValue > currentStockPrice ? '+' : '' }}{{ ((targetValue - currentStockPrice) / currentStockPrice * 100) | number:'1.1-1' }}%
+            ({{ targetValue > currentStockPrice ? '+' : '' }}${{ (targetValue - currentStockPrice) | number:'1.2-2' }})
+          </span>
+        </div>
+        <div class="price-difference" *ngIf="triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE && percentageValue">
+          <span class="difference" [class.positive]="calculateTargetValue(percentageValue) > currentStockPrice" [class.negative]="calculateTargetValue(percentageValue) < currentStockPrice">
+            {{ calculateTargetValue(percentageValue) > currentStockPrice ? '+' : '' }}{{ ((calculateTargetValue(percentageValue) - currentStockPrice) / currentStockPrice * 100) | number:'1.1-1' }}%
+            ({{ calculateTargetValue(percentageValue) > currentStockPrice ? '+' : '' }}${{ (calculateTargetValue(percentageValue) - currentStockPrice) | number:'1.2-2' }})
           </span>
         </div>
       </div>

@@ -1,6 +1,7 @@
 package com.erenkalkan.stockpulse.config;
 
 import com.erenkalkan.stockpulse.model.dto.StockPriceDTO;
+import com.erenkalkan.stockpulse.model.entity.Alert;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -25,6 +26,8 @@ public class KafkaConfig {
 
     @Value("${app.kafka.topics.stockPrices:stock-prices}")
     private String stockPricesTopic;
+    @Value("${app.kafka.topics.alertTriggers:alert-triggers")
+    private String alertTriggersTopic;
 
     // Kafka Admin Configuration - needed for auto topic creation
     @Bean
@@ -44,6 +47,14 @@ public class KafkaConfig {
     }
 
     @Bean
+    public NewTopic alertTriggersTopic() {
+        return TopicBuilder.name("alert-triggers")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
     public ProducerFactory<String, StockPriceDTO> stockPriceProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -59,10 +70,31 @@ public class KafkaConfig {
     }
 
     @Bean
+    public ProducerFactory<String, Alert> alertProducerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        // Essential performance and reliability settings
+        configProps.put(ProducerConfig.ACKS_CONFIG, "1"); // Wait for leader acknowledgment
+        configProps.put(ProducerConfig.RETRIES_CONFIG, 3);
+        configProps.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false); // Prevent type info in headers
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
     public KafkaTemplate<String, StockPriceDTO> stockPriceKafkaTemplate() {
         KafkaTemplate<String, StockPriceDTO> template = new KafkaTemplate<>(stockPriceProducerFactory());
         template.setDefaultTopic(stockPricesTopic);
         return template;
+    }
+
+    @Bean
+    public KafkaTemplate<String, Alert> alertKafkaTemplate() {
+        KafkaTemplate<String, Alert> template = new KafkaTemplate<>(alertProducerFactory());
+        template.setDefaultTopic(alertTriggersTopic);
+        return new KafkaTemplate<>(alertProducerFactory());
     }
 
     @Bean

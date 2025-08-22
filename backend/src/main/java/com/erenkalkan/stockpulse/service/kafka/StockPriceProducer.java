@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StockPriceKafkaPublisherService {
+public class StockPriceProducer {
 
     private final KafkaTemplate<String, StockPriceDTO> stockPriceKafkaTemplate;
 

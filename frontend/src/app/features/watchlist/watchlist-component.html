@@ -58,23 +58,17 @@
                 <span class="value">{{ alert.triggerType === TriggerType.TO_PRICE ? 'Target Price' : 'Percentage Change' }}</span>
               </div>
               <div class="detail-item">
-                <span *ngIf="alert.triggerType === TriggerType.TO_PRICE" class="label">Target:</span>
-                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="label">Alert Value:</span>
-                <span *ngIf="alert.triggerType === TriggerType.TO_PRICE" class="value target-value">{{ formatCurrency(alert.alertValue) }}</span>
-                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="value target-value">{{ alert.alertValue }}%</span>
-              </div>
-              <div *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="detail-item">
-                <span class="label">Target</span>
-                <span class="value">{{ alert.targetValue }}</span>
+                <span class="label">Target:</span>
+                <span class="value target-value">{{ formatCurrency(alert.targetValue) }}</span>
               </div>
               <div class="detail-item">
+                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="label">Percentage Value:</span>
+                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="value target-value">{{ alert.percentageValue }}%</span>
+              </div>
+
+              <div class="detail-item">
                 <span class="label">Current:</span>
-                <span *ngIf="alert.triggerType === TriggerType.TO_PRICE" class="value current-value"
-                      [class.above-target]="alert.stock.currentPrice > alert.alertValue"
-                      [class.below-target]="alert.stock.currentPrice < alert.alertValue">
-                  {{ formatCurrency(alert.stock.currentPrice) }}
-                </span>
-                <span *ngIf="alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE" class="value current-value"
+                <span class="value current-value"
                       [class.above-target]="alert.stock.currentPrice > alert.targetValue"
                       [class.below-target]="alert.stock.currentPrice < alert.targetValue">
                   {{ formatCurrency(alert.stock.currentPrice) }}
@@ -82,16 +76,7 @@
               </div>
             </div>
 
-            <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.TO_PRICE">
-              <div class="progress-bar">
-                <div class="progress-fill"
-                     [style.width.%]="calculateProgress(alert.alertValue, alert.stock.currentPrice)"></div>
-              </div>
-              <span class="progress-text">
-                {{ calculateProgress(alert.alertValue, alert.stock.currentPrice).toFixed(1) }}% of target
-              </span>
-            </div>
-            <div class="progress-indicator" *ngIf="!alert.isTriggered && alert.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE">
+            <div class="progress-indicator" *ngIf="!alert.isTriggered">
               <div class="progress-bar">
                 <div class="progress-fill"
                      [style.width.%]="calculateProgress(alert.targetValue, alert.stock.currentPrice)"></div>

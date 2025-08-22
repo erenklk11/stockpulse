@@ -26,7 +26,8 @@ export class AlertPopupComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
 
   triggerType: TriggerType = TriggerType.TO_PRICE;
-  alertValue!: number;
+  percentageValue!: number;
+  targetValue!: number;
 
   watchlists: WatchlistDTO[] = [];
   selectedWatchlistId: number | null = null;
@@ -50,15 +51,15 @@ export class AlertPopupComponent implements OnInit {
   isFormValid(): boolean {
     if (this.triggerType === TriggerType.TO_PRICE) {
       return !!(
-        this.alertValue &&
-        this.alertValue > 0 &&
+        this.targetValue &&
+        this.targetValue > 0 &&
         this.selectedWatchlistId &&
         this.symbol
       );
     }
     return !!(
-      this.alertValue &&
-      this.alertValue > -100 &&
+      this.percentageValue &&
+      this.percentageValue > -100 &&
       this.selectedWatchlistId &&
       this.symbol
     );
@@ -86,8 +87,8 @@ export class AlertPopupComponent implements OnInit {
         companyName: this.companyName
       },
       triggerType: this.triggerType,
-      alertValue: this.alertValue,
-      targetValue: this.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE ? this.calculateTargetValue(this.alertValue): this.alertValue,
+      percentageValue: this.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE ? this.percentageValue : undefined,
+      targetValue: this.triggerType === TriggerType.PERCENTAGE_CHANGE_PRICE ? this.calculateTargetValue(this.percentageValue): this.targetValue,
       watchlistId: this.selectedWatchlistId!
     };
 

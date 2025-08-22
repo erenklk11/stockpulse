@@ -4,7 +4,7 @@ import {Stock} from './stock';
 export interface AlertDTO {
   stock: Stock;
   triggerType: TriggerType;
-  alertValue: number;
+  percentageValue?: number;
   targetValue: number;
   watchlistId: number;
 }

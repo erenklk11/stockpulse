@@ -1,7 +1,7 @@
 package com.erenkalkan.stockpulse.service;
 
 import com.erenkalkan.stockpulse.model.dto.StockPriceDTO;
-import com.erenkalkan.stockpulse.service.kafka.StockPriceKafkaPublisherService;
+import com.erenkalkan.stockpulse.service.kafka.StockPriceProducer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -35,7 +35,7 @@ public class StockWebSocketService {
   @Value("${app.api.finnhub.key}")
   private String finnhubApiKey;
 
-  private final StockPriceKafkaPublisherService kafkaPublisher;
+  private final StockPriceProducer kafkaPublisher;
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
   private WebSocketSession currentSession;
@@ -146,7 +146,6 @@ public class StockWebSocketService {
           return;
         }
 
-        // Parse the incoming JSON message from Finnhub
         JsonNode rootNode = objectMapper.readTree(payload);
         String type = rootNode.path("type").asText();
 

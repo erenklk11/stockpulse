@@ -6,7 +6,7 @@ export interface Alert {
   stock: Stock;
   triggerType: TriggerType;
   isTriggered: boolean
-  alertValue: number;
+  percentageValue?: number;
   targetValue: number;
   createdAt: string
   triggeredAt: string

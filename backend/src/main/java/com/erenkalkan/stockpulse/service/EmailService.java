@@ -1,5 +1,7 @@
 package com.erenkalkan.stockpulse.service;
 
+import com.erenkalkan.stockpulse.model.entity.Alert;
+import com.erenkalkan.stockpulse.model.entity.User;
 import com.erenkalkan.stockpulse.model.entity.VerificationToken;
 import com.erenkalkan.stockpulse.model.enums.TokenType;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +46,30 @@ public class EmailService {
     }
   }
 
+  public void sendAlertEmail(Alert alert) {
 
+    User user = alert.getWatchlist().getUser();
+    String to = user.getEmail();
+
+    try {
+      SimpleMailMessage mail = new SimpleMailMessage();
+      mail.setFrom(from);
+      mail.setTo(to);
+
+      mail.setText(String.format("""
+              Hey %s,
+              We would like to inform you about your Alert for the stock: %s
+              Price is now %s your target of %.2f
+              """, user.getFirstName(),
+              alert.getStock().getSymbol(),
+              alert.getCondition().toString().toLowerCase(), alert.getTargetValue()));
+
+      sender.send(mail);
+    }
+    catch(Exception e) {
+      throw new MailSendException("Failed to send alert trigger email", e);
+    }
+  }
 
 
 }

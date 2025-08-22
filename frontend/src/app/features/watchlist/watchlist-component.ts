@@ -64,8 +64,6 @@ export class WatchlistComponent implements OnInit {
     // Getting last close price just in case the market is closed and the websocket connection doesn't receive any live prices
     this.setStockClosePrices();
     this.getLiveStockPrices();
-
-    this.cdr.detectChanges();
   }
 
   setStockClosePrices(): void {
@@ -75,6 +73,7 @@ export class WatchlistComponent implements OnInit {
           if (response.price) {
             alert.stock.currentPrice = response.price;
             console.log(`CLOSE PRICE: ${response.price}`)
+            this.cdr.detectChanges();
           }
           return 0;
         },

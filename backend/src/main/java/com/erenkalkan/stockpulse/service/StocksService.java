@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClientException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -82,6 +83,13 @@ public class StocksService {
 
     cache.put(symbol, new CacheEntry(data, now));
     return data;
+  }
+
+  public Optional<Stock> findBySymbol(String symbol) {
+    if (symbol == null || symbol.trim().isEmpty()) {
+      throw new InvalidInputException("Stock symbol cannot be null or empty");
+    }
+    return stockRepository.findBySymbol(symbol);
   }
 
   private StockDataDTO fetchStockDataFromFinnhubAPI(String symbol) {

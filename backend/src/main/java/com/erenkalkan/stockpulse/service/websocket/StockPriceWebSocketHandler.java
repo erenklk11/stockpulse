@@ -37,7 +37,6 @@ public class StockPriceWebSocketHandler extends TextWebSocketHandler {
   }
 
   public void broadcast(String message) {
-    // Iterate over a copy of the sessions to avoid ConcurrentModificationException
     Set<WebSocketSession> currentSessions = new HashSet<>(sessions);
     for (WebSocketSession session : currentSessions) {
       if (session.isOpen()) {
@@ -60,7 +59,6 @@ public class StockPriceWebSocketHandler extends TextWebSocketHandler {
     try {
       String payload = message.getPayload();
 
-      // Parse the incoming message
       JsonNode messageNode = objectMapper.readTree(payload);
       String messageType = messageNode.get("type").asText();
 
