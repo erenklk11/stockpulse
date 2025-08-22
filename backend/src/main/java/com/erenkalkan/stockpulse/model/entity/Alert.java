@@ -36,11 +36,11 @@ public class Alert {
   private TriggerType triggerType;
 
   @Column(name = "percentage_value")
-  private Integer percentageValue;
+  private Double percentageValue;
 
   @NotNull
   @Column(name = "target_value", nullable = false)
-  private Long targetValue;
+  private Double targetValue;
 
   @Column(name = "condition")
   private ConditionType condition;

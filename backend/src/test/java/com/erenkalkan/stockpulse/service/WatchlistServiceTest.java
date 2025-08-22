@@ -288,14 +288,14 @@ class WatchlistServiceTest {
             .stock(testStock)
             .triggerType(TriggerType.TO_PRICE)
             .condition(ConditionType.ABOVE)
-            .targetValue(150L)
+            .targetValue(150.00)
             .build();
 
     Alert alert2 = Alert.builder()
             .stock(testStock)
             .triggerType(TriggerType.PERCENTAGE_CHANGE_PRICE)
             .condition(ConditionType.BELOW)
-            .targetValue(150L)
+            .targetValue(150.00)
             .build();
 
     Watchlist watchlist1 = Watchlist.builder()

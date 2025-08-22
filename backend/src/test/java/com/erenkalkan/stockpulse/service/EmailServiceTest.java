@@ -44,7 +44,7 @@ class EmailServiceTest {
   private final String TEST_FROM_EMAIL = "noreply@stockpulse.com";
   private final String TEST_APP_URL = "http://localhost:3000";
   private final String TEST_STOCK_SYMBOL = "AAPL";
-  private final Long TEST_TARGET_VALUE = 150L;
+  private final Double TEST_TARGET_VALUE = 150.00;
 
   @BeforeEach
   void setUp() {
@@ -296,7 +296,7 @@ class EmailServiceTest {
   @Test
   void sendAlertEmail_shouldFormatTargetValueWithTwoDecimals() {
     // Arrange
-    Long targetValue = 12345L;
+    Double targetValue = 12345.00;
     testAlert = Alert.builder()
             .stock(testStock)
             .watchlist(testWatchlist)
