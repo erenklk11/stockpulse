@@ -88,5 +88,4 @@ public class NewsService {
       throw new RestClientException("Failed to fetch news from Finnhub API", e);
     }
   }
-
 }
