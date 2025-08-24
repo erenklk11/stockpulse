@@ -33,16 +33,18 @@ public class AlertProcessingService {
 
     for (Alert alert : alerts) {
       boolean conditionMet = false;
-      if ((ConditionType.ABOVE.equals(alert.getCondition()) && priceUpdate.getPrice() > alert.getTargetValue()) ||
-              (ConditionType.BELOW.equals(alert.getCondition()) && priceUpdate.getPrice() < alert.getTargetValue()) && !alert.isTriggered()) {
-        conditionMet = true;
-      }
+      if (((ConditionType.ABOVE.equals(alert.getCondition()) && priceUpdate.getPrice() > alert.getTargetValue()) ||
+              (ConditionType.BELOW.equals(alert.getCondition()) && priceUpdate.getPrice() < alert.getTargetValue())) && !alert.isTriggered()) {
+        {
+          conditionMet = true;
+        }
 
-      if (conditionMet) {
-        log.info("Alert triggered for user {}: {} is {} {}",
-                alert.getWatchlist().getUser(), alert.getStock().getSymbol(), alert.getCondition(), alert.getTargetValue());
-        alertKafkaTemplate.send(alertTriggersTopic, alert);
-        alert.setTriggered(true);
+        if (conditionMet) {
+          log.info("Alert triggered for user {}: {} is {} {}",
+                  alert.getWatchlist().getUser(), alert.getStock().getSymbol(), alert.getCondition(), alert.getTargetValue());
+          alertKafkaTemplate.send(alertTriggersTopic, alert);
+          alert.setTriggered(true);
+        }
       }
     }
   }
