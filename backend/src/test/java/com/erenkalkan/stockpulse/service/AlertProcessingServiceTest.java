@@ -47,7 +47,7 @@ class AlertProcessingServiceTest {
 
   @BeforeEach
   void setUp() {
-    // Arrange - Set up test data and inject the topic value
+    // Arrange
     ReflectionTestUtils.setField(alertProcessingService, "alertTriggersTopic", "alert-triggers");
 
     testStock = Stock.builder()
@@ -91,14 +91,14 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenAboveConditionMet_ShouldTriggerAlert() {
-    // Arrange - Set up mock to return alert with ABOVE condition that should trigger
+    // Arrange
     List<Alert> alerts = Collections.singletonList(aboveAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify alert was triggered and sent to Kafka
+    // Assert
     assertTrue(aboveAlert.isTriggered(), "Alert should be marked as triggered");
     verify(alertKafkaTemplate, times(1)).send("alert-triggers", aboveAlert);
     verify(alertService, times(1)).findAllBySymbol("AAPL");
@@ -106,14 +106,14 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenBelowConditionMet_ShouldTriggerAlert() {
-    // Arrange - Set up mock to return alert with BELOW condition that should trigger
+    // Arrange
     List<Alert> alerts = Collections.singletonList(belowAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify alert was triggered and sent to Kafka
+    // Assert
     assertTrue(belowAlert.isTriggered(), "Alert should be marked as triggered");
     verify(alertKafkaTemplate, times(1)).send("alert-triggers", belowAlert);
     verify(alertService, times(1)).findAllBySymbol("AAPL");
@@ -121,15 +121,15 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenAboveConditionNotMet_ShouldNotTriggerAlert() {
-    // Arrange - Create alert with ABOVE condition that won't be met (target higher than current price)
+    // Arrange
     Alert highTargetAlert = createAlert(4L, ConditionType.ABOVE, 200.00, false);
     List<Alert> alerts = Collections.singletonList(highTargetAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify alert was not triggered
+    // Assert
     assertFalse(highTargetAlert.isTriggered(), "Alert should not be marked as triggered");
     verify(alertKafkaTemplate, never()).send(anyString(), any(Alert.class));
     verify(alertService, times(1)).findAllBySymbol("AAPL");
@@ -137,15 +137,15 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenBelowConditionNotMet_ShouldNotTriggerAlert() {
-    // Arrange - Create alert with BELOW condition that won't be met (target lower than current price)
+    // Arrange
     Alert lowTargetAlert = createAlert(5L, ConditionType.BELOW, 100.00, false);
     List<Alert> alerts = Collections.singletonList(lowTargetAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify alert was not triggered
+    // Assert
     assertFalse(lowTargetAlert.isTriggered(), "Alert should not be marked as triggered");
     verify(alertKafkaTemplate, never()).send(anyString(), any(Alert.class));
     verify(alertService, times(1)).findAllBySymbol("AAPL");
@@ -153,14 +153,14 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenAlertAlreadyTriggered_ShouldNotTriggerAgain() {
-    // Arrange - Set up already triggered alert
+    // Arrange
     List<Alert> alerts = Collections.singletonList(triggeredAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify alert was not triggered again
+    // Assert
     assertTrue(triggeredAlert.isTriggered(), "Alert should remain triggered");
     verify(alertKafkaTemplate, never()).send(anyString(), any(Alert.class));
     verify(alertService, times(1)).findAllBySymbol("AAPL");
@@ -168,7 +168,7 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenMultipleAlertsExist_ShouldProcessAllCorrectly() {
-    // Arrange - Set up multiple alerts with different conditions
+    // Arrange
     Alert anotherAboveAlert = createAlert(6L, ConditionType.ABOVE, 145.00, false);
     Alert anotherBelowAlert = createAlert(7L, ConditionType.BELOW, 155.00, false);
     Alert nonTriggeringAlert = createAlert(8L, ConditionType.ABOVE, 200.00, false);
@@ -176,10 +176,10 @@ class AlertProcessingServiceTest {
     List<Alert> alerts = Arrays.asList(aboveAlert, anotherAboveAlert, anotherBelowAlert, nonTriggeringAlert, triggeredAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify correct alerts were triggered
+    // Assert
     assertTrue(aboveAlert.isTriggered(), "First above alert should be triggered");
     assertTrue(anotherAboveAlert.isTriggered(), "Second above alert should be triggered");
     assertTrue(anotherBelowAlert.isTriggered(), "Below alert should be triggered");
@@ -193,28 +193,28 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenNoAlertsExist_ShouldHandleGracefully() {
-    // Arrange - Set up empty alerts list
+    // Arrange
     when(alertService.findAllBySymbol("AAPL")).thenReturn(Collections.emptyList());
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify no Kafka messages sent
+    // Assert
     verify(alertKafkaTemplate, never()).send(anyString(), any(Alert.class));
     verify(alertService, times(1)).findAllBySymbol("AAPL");
   }
 
   @Test
   void processStockPrice_WhenPriceEqualsTargetValue_ShouldNotTriggerAlert() {
-    // Arrange - Create alert with target value equal to current price
+    // Arrange
     Alert equalTargetAlert = createAlert(9L, ConditionType.ABOVE, 150.00, false);
     List<Alert> alerts = Collections.singletonList(equalTargetAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify alert was not triggered (condition requires ABOVE, not equal)
+    // Assert
     assertFalse(equalTargetAlert.isTriggered(), "Alert should not be triggered for equal values with ABOVE condition");
     verify(alertKafkaTemplate, never()).send(anyString(), any(Alert.class));
     verify(alertService, times(1)).findAllBySymbol("AAPL");
@@ -222,15 +222,15 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_ShouldSendCorrectAlertToKafka() {
-    // Arrange - Set up alert that will be triggered
+    // Arrange
     List<Alert> alerts = Collections.singletonList(aboveAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
     ArgumentCaptor<Alert> alertCaptor = ArgumentCaptor.forClass(Alert.class);
 
-    // Act - Process the testStock price update
+    // Act
     alertProcessingService.processStockPrice(stockPriceDTO);
 
-    // Assert - Verify correct alert object sent to Kafka
+    // Assert
     verify(alertKafkaTemplate).send(eq("alert-triggers"), alertCaptor.capture());
     Alert capturedAlert = alertCaptor.getValue();
     assertEquals(aboveAlert.getId(), capturedAlert.getId(), "Correct alert should be sent to Kafka");
@@ -239,16 +239,16 @@ class AlertProcessingServiceTest {
 
   @Test
   void processStockPrice_WhenKafkaTemplateFails_ShouldNotAffectAlertState() {
-    // Arrange - Set up alert and mock Kafka template to throw exception
+    // Arrange
     List<Alert> alerts = Collections.singletonList(aboveAlert);
     when(alertService.findAllBySymbol("AAPL")).thenReturn(alerts);
     doThrow(new RuntimeException("Kafka error")).when(alertKafkaTemplate).send(anyString(), any(Alert.class));
 
-    // Act & Assert - Process should propagate Kafka failure exception
+    // Act
     RuntimeException exception = assertThrows(RuntimeException.class,
             () -> alertProcessingService.processStockPrice(stockPriceDTO));
 
-    // Assert - Verify exception message and that alert state was updated before failure
+    // Assert
     assertEquals("Kafka error", exception.getMessage());
     assertFalse(aboveAlert.isTriggered(), "Alert should be marked as triggered before Kafka failure");
     verify(alertKafkaTemplate, times(1)).send("alert-triggers", aboveAlert);
