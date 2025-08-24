@@ -1,5 +1,7 @@
 package com.erenkalkan.stockpulse.service;
 
+import com.erenkalkan.stockpulse.model.enums.Role;
+import com.erenkalkan.stockpulse.model.enums.TriggerType;
 import com.erenkalkan.stockpulse.service.websocket.AlertTriggerWebSocketHandler;
 import com.erenkalkan.stockpulse.model.entity.Alert;
 import com.erenkalkan.stockpulse.model.entity.Stock;
@@ -33,21 +35,30 @@ class NotificationServiceTest {
 
   @BeforeEach
   void setUp() {
-    // Arrange - Create test data objects
-    user = new User();
-    user.setEmail("test@example.com");
+    // Arrange
+    user = User.builder()
+            .firstName("Bruce")
+            .email("test@email.com")
+            .role(Role.REGULAR_USER)
+            .build();
 
-    stock = new Stock();
-    stock.setSymbol("AAPL");
+    stock = Stock.builder()
+            .companyName("Apple Inc.")
+            .symbol("AAPL")
+            .build();
 
-    watchlist = new Watchlist();
-    watchlist.setUser(user);
+    watchlist = Watchlist.builder()
+            .watchlistName("Test Watchlist")
+            .user(user)
+            .build();
 
-    alert = new Alert();
-    alert.setStock(stock);
-    alert.setWatchlist(watchlist);
-    alert.setTargetValue(150.0);
-    alert.setCondition(ConditionType.ABOVE);
+    alert = Alert.builder()
+            .stock(stock)
+            .watchlist(watchlist)
+            .triggerType(TriggerType.TO_PRICE)
+            .condition(ConditionType.ABOVE)
+            .targetValue(150.00)
+            .build();
   }
 
   private String formatExpectedMessage(String symbol, String condition, Double targetValue) {
