@@ -35,7 +35,7 @@ public class SecurityConfig {
   @Order(1)
   public SecurityFilterChain publicFilterChain(HttpSecurity http) throws Exception {
     return http
-            .securityMatcher("/api/auth/**", "/api/oauth/**", "/api/password/**")
+            .securityMatcher("/api/auth/**", "/api/oauth/**", "/api/password/forgot", "/api/password/reset", "/api/password/verify")
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
@@ -61,7 +61,7 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Angular dev server
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Cookie"));
     configuration.setAllowCredentials(true);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

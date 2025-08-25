@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
 import { LoginRequestDTO } from '../../features/auth/login/model/login-request-dto';
-import { Observable, BehaviorSubject } from 'rxjs';
+import {Observable, BehaviorSubject, of} from 'rxjs';
 import { environment } from '../../../environments/environments';
 import { RegisterRequestDto } from '../../features/auth/register/model/register-request-dto';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
+import {filter, take, tap} from 'rxjs/operators';
 import {ResetPasswordRequestDto} from '../../features/auth/password/model/reset-password-request-dto';
+import {ChangePasswordRequestDTO} from '../../features/settings/model/change-password-request-dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  private isAuthenticatedSubject = new BehaviorSubject<boolean | null>(null);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   // In-memory token storage (more secure than localStorage)
@@ -37,7 +38,6 @@ export class AuthService {
     private router: Router
   ) {
     this.configureGoogleAuth();
-    this.checkAuthenticationStatus();
   }
 
   login(loginData: LoginRequestDTO): Observable<any> {
@@ -51,21 +51,23 @@ export class AuthService {
   }
 
   register(registerData: RegisterRequestDto): Observable<any> {
-    return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.register, registerData, {
-      withCredentials: true
-    });
+    return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.register, registerData);
   }
 
   forgotPassword(email: string): Observable<any> {
     return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.forgotPassword, email);
   }
 
-  verifyPasswordResetToken(token: string): Observable<boolean> {
+  verifyPasswordResetToken(token: string): Observable<any> {
     return this.http.post<boolean>(environment.apiUrl + environment.endpoints.auth.verifyToken, { token });
   }
 
-  resetPassword(request: ResetPasswordRequestDto) : Observable<boolean> {
-    return this.http.post<any>(environment.apiUrl + environment.endpoints.auth.resetPassword, {request});
+  resetPassword(request: ResetPasswordRequestDto) : Observable<any> {
+    return this.http.put<any>(environment.apiUrl + environment.endpoints.auth.resetPassword, {request});
+  }
+
+  changePassword(request: ChangePasswordRequestDTO) : Observable<any> {
+    return this.http.put<any>(environment.apiUrl + environment.endpoints.auth.changePassword, request, {withCredentials: true});
   }
 
   // Google OAuth2 methods
@@ -140,43 +142,25 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
+    const currentStatus = this.isAuthenticatedSubject.value;
     const googleToken = this.oauthService.hasValidAccessToken();
-    // For HTTP-only cookies, we'll need to check with the server
-    return this.isAuthenticatedSubject.value || googleToken;
+    return currentStatus === true || googleToken;
   }
 
-  // For HTTP-only cookies, we don't expose the actual token
-  getToken(): string | null {
-    // Return Google token if available, otherwise null
-    // HTTP-only cookies are automatically sent by the browser
-    return this.oauthService.getAccessToken() || null;
-  }
+  checkAuthenticationStatus(): void {
+    console.log('Checking authentication status...');
 
-  getUserInfo(): any {
-    const googleClaims = this.oauthService.getIdentityClaims();
-    if (googleClaims) {
-      return googleClaims;
-    }
-
-    // For JWT stored in HTTP-only cookies, we'll need to fetch user info from an API endpoint
-    return null;
-  }
-
-  // Check authentication status on app initialization
-  private checkAuthenticationStatus(): void {
-    // Make a request to verify if user is authenticated via HTTP-only cookies
-    this.http.post(environment.apiUrl + environment.endpoints.auth.verify, {
+    this.http.post(environment.apiUrl + environment.endpoints.auth.verify, {}, {
       withCredentials: true
     }).subscribe({
       next: (response: any) => {
-        if (response.verified) {
-          this.isAuthenticatedSubject.next(true);
-        }
+        console.log('Auth verification response:', response);
+        this.isAuthenticatedSubject.next(response.verified);
       },
-      error: () => {
+      error: (error) => {
+        console.error('Auth verification error:', error);
         this.isAuthenticatedSubject.next(false);
       }
     });
   }
-
 }

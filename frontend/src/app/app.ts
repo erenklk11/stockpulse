@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {HeaderComponent} from './shared/header-component/header-component';
+import {AuthService} from './core/auth/auth-service';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +10,8 @@ import {HeaderComponent} from './shared/header-component/header-component';
 })
 export class App {
   protected title = 'stockpulse';
+
+  constructor(private authService: AuthService) {
+    this.authService.checkAuthenticationStatus();
+  }
 }

@@ -1,1 +1,85 @@
-<p>settings-component works!</p>
+<div class="settings-container">
+  <div class="header-container">
+    <h2>Settings</h2>
+  </div>
+
+  <div class="settings-section">
+    <h3>Change Password</h3>
+
+    <!-- Response messages -->
+    <div *ngIf="responseMessage" [ngClass]="responseClass">
+      {{ responseMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="formGroup" (ngSubmit)="submit()">
+      <!-- Current Password Field -->
+      <div class="form-group">
+        <label for="currentPassword">Current Password</label>
+        <div class="input-container">
+          <i class="input-icon fas fa-lock"></i>
+          <input
+            [type]="showCurrentPassword ? 'text' : 'password'"
+            id="currentPassword"
+            name="currentPassword"
+            formControlName="currentPassword"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': (formGroup.get('currentPassword')?.errors && firstAttemptMade) }"
+            placeholder="Enter your current password*"
+          />
+          <i
+            class="toggle-password-visibility fas"
+            [ngClass]="showCurrentPassword ? 'fa-eye' : 'fa-eye-slash'"
+            (click)="toggleCurrentPasswordVisibility()"
+          ></i>
+        </div>
+        <div *ngIf="formGroup.get('currentPassword')?.errors?.['required'] && firstAttemptMade" class="invalid-feedback">
+          Current password is required.
+        </div>
+      </div>
+
+      <!-- New Password Field -->
+      <div class="form-group">
+        <label for="newPassword">New Password</label>
+        <div class="input-container">
+          <i class="input-icon fas fa-key"></i>
+          <input
+            [type]="showNewPassword ? 'text' : 'password'"
+            id="newPassword"
+            name="newPassword"
+            formControlName="newPassword"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': (formGroup.get('newPassword')?.errors && firstAttemptMade) }"
+            placeholder="Enter your new password*"
+          />
+          <i
+            class="toggle-password-visibility fas"
+            [ngClass]="showNewPassword ? 'fa-eye' : 'fa-eye-slash'"
+            (click)="toggleNewPasswordVisibility()"
+          ></i>
+        </div>
+        <div *ngIf="formGroup.get('newPassword')?.errors?.['required'] && firstAttemptMade" class="invalid-feedback">
+          New password is required.
+        </div>
+        <div *ngIf="formGroup.get('newPassword')?.errors?.['minlength'] && firstAttemptMade" class="invalid-feedback">
+          New password must be at least {{passwordMinLength}} characters long.
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-group">
+        <button
+          type="submit"
+          class="change-password-btn"
+          [disabled]="!formGroup.valid || isLoading"
+        >
+          <span *ngIf="isLoading">Changing Password...</span>
+          <span *ngIf="!isLoading">Change Password</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

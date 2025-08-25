@@ -1,7 +1,6 @@
 package com.erenkalkan.stockpulse.controller;
 
 import com.erenkalkan.stockpulse.model.dto.*;
-import com.erenkalkan.stockpulse.model.entity.VerificationToken;
 import com.erenkalkan.stockpulse.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,12 +56,15 @@ public class AuthController {
 
 
   private void setJwtCookie(HttpServletResponse response, String token) {
-    Cookie cookie = new Cookie("auth-token", token);
-    cookie.setHttpOnly(true);
-    cookie.setSecure(true);
-    cookie.setPath("/");
-    cookie.setMaxAge(86400);
-    response.addCookie(cookie);
+    ResponseCookie cookie = ResponseCookie.from("auth-token", token)
+            .httpOnly(true)
+            .secure(false) // true in prod
+            .path("/")
+            .maxAge(86400)
+            .sameSite("Lax")
+            .build();
+
+    response.setHeader("Set-Cookie", cookie.toString());
   }
 
   private Cookie clearCookie() {

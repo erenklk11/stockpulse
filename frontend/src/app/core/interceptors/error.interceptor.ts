@@ -11,12 +11,20 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       let errorMessage = 'Unknown error';
 
-      // Use backend error message if available, otherwise use generic message
       if (error.error && error.error.message) {
         errorMessage = error.error.message;
+      } else if (error.message) {
+        errorMessage = error.message;
       }
 
-      return throwError(() => new Error(errorMessage));
+      // Option A: keep original error but add message
+      const enhancedError = {
+        ...error,
+        friendlyMessage: errorMessage
+      };
+
+      return throwError(() => enhancedError);
     })
   );
 };
+

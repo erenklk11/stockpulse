@@ -1,10 +1,12 @@
 package com.erenkalkan.stockpulse.controller;
 
+import com.erenkalkan.stockpulse.model.dto.ChangePasswordRequestDTO;
 import com.erenkalkan.stockpulse.model.dto.ResetPasswordRequestDTO;
 import com.erenkalkan.stockpulse.service.VerificationTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -24,10 +26,17 @@ public class PasswordController {
     return ResponseEntity.ok(response);
   }
 
-  @PostMapping("/reset")
-  public ResponseEntity<Map<String, Boolean>> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO request) {
+  @PutMapping("/reset")
+  public ResponseEntity<Map<String, Boolean>> changePassword(@Valid @RequestBody ResetPasswordRequestDTO request) {
     Map<String, Boolean> response = new HashMap<>();
     response.put("passwordReset", tokenService.resetPassword(request));
+    return ResponseEntity.ok(response);
+  }
+
+  @PutMapping("/change")
+  public ResponseEntity<Map<String, Boolean>> changePassword(@Valid @RequestBody ChangePasswordRequestDTO request, Authentication authentication) {
+    Map<String, Boolean> response = new HashMap<>();
+    response.put("passwordChanged", tokenService.resetPassword(request, authentication));
     return ResponseEntity.ok(response);
   }
 

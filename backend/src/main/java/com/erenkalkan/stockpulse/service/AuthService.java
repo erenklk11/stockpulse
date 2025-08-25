@@ -3,12 +3,9 @@ package com.erenkalkan.stockpulse.service;
 import com.erenkalkan.stockpulse.exception.*;
 import com.erenkalkan.stockpulse.model.dto.*;
 import com.erenkalkan.stockpulse.model.entity.User;
-import com.erenkalkan.stockpulse.model.entity.VerificationToken;
 import com.erenkalkan.stockpulse.model.enums.Role;
-import com.erenkalkan.stockpulse.model.enums.TokenType;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

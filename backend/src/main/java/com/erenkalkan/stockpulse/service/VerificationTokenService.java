@@ -1,6 +1,7 @@
 package com.erenkalkan.stockpulse.service;
 
 import com.erenkalkan.stockpulse.exception.*;
+import com.erenkalkan.stockpulse.model.dto.ChangePasswordRequestDTO;
 import com.erenkalkan.stockpulse.model.dto.ResetPasswordRequestDTO;
 import com.erenkalkan.stockpulse.model.entity.User;
 import com.erenkalkan.stockpulse.model.entity.VerificationToken;
@@ -9,6 +10,7 @@ import com.erenkalkan.stockpulse.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +82,31 @@ public class VerificationTokenService {
 
     userService.saveUser(user);
     verificationTokenRepository.save(verificationToken);
+
+    return true;
+  }
+
+  public boolean resetPassword(ChangePasswordRequestDTO request, Authentication authentication) {
+
+    if (request.getNewPassword() == null || request.getNewPassword().trim().isEmpty()) {
+      throw new InvalidInputException("New password cannot be null or empty");
+    }
+
+    if (request.getCurrentPassword() == null || request.getCurrentPassword().trim().isEmpty()) {
+      throw new InvalidInputException("Current password cannot be null or empty");
+    }
+
+    Optional<User> optionalUser = userService.findByEmail(authentication.getName());
+    if (optionalUser.isEmpty()) {
+      throw new UserNotFoundException("User with email: " + authentication.getName() + " was not found");
+    }
+    User user = optionalUser.get();
+
+    if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+      throw new UnauthorizedAccessException(String.format("User: %s is not authorized to change the password", user.getEmail()));
+    }
+    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+    userService.saveUser(user);
 
     return true;
   }
