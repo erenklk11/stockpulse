@@ -106,7 +106,7 @@ export class OAuthCallbackComponent implements OnInit {
         next: (response) => {
           // Clean up URL parameters before navigation
           window.history.replaceState({}, document.title, window.location.pathname);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/home']);
         },
         error: (error) => {
           console.error('Google authentication failed:', error);

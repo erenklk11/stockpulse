@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class OAuthController {
             log.info("Processing Google OAuth authentication for authorization code");
 
             LoginResponseDTO loginResponse = googleOAuthService.authenticateWithGoogle(request.getCode(), request.getCodeVerifier());
+            log.info("THE USER: {}", loginResponse);
             setJwtCookie(response, loginResponse.getToken());
             loginResponse.setToken(null);
 
@@ -54,13 +56,14 @@ public class OAuthController {
     }
 
     private void setJwtCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie(cookieName, token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(!"dev".equals(environment)); // HTTPS only in production
-        cookie.setPath("/");
-        cookie.setMaxAge(cookieMaxAge);
-        cookie.setAttribute("SameSite", "Lax");
+        ResponseCookie cookie = ResponseCookie.from("auth-token", token)
+                .httpOnly(true)
+                .secure(false) // true in prod
+                .path("/")
+                .maxAge(86400)
+                .sameSite("Lax")
+                .build();
 
-        response.addCookie(cookie);
+        response.setHeader("Set-Cookie", cookie.toString());
     }
 }

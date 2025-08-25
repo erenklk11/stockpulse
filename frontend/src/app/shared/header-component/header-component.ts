@@ -30,4 +30,8 @@ export class HeaderComponent {
   onLogoClick(): void {
     this.router.navigate([routes.find(route => route.path === 'home')?.path || '/home']);
   }
+
+  settingsEnabled(): boolean {
+    return !!sessionStorage.getItem("isOAuthUser");
+  }
 }

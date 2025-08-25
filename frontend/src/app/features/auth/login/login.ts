@@ -75,10 +75,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  loginWithGoogle(): void {
+  async loginWithGoogle(): Promise<void> {
+    console.log('Google login button clicked');
     this.isGoogleLoading = true;
     try {
-      this.authService.loginWithGoogle();
+      await this.authService.loginWithGoogle();
+      console.log('Login flow initiated successfully');
     } catch (error) {
       this.isGoogleLoading = false;
       console.error('Google login failed:', error);
