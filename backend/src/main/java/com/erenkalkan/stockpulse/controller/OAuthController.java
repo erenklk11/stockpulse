@@ -3,13 +3,11 @@ package com.erenkalkan.stockpulse.controller;
 import com.erenkalkan.stockpulse.model.dto.GoogleOAuthRequestDTO;
 import com.erenkalkan.stockpulse.model.dto.LoginResponseDTO;
 import com.erenkalkan.stockpulse.service.GoogleOAuthService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -23,14 +21,9 @@ public class OAuthController {
 
     private final GoogleOAuthService googleOAuthService;
 
-    @Value("${app.jwt.cookie.name:auth-token}")
-    private String cookieName;
-
-    @Value("${app.jwt.cookie.max-age:86400}")
+    @Value("${app.jwt.expiration}")
     private int cookieMaxAge;
 
-    @Value("${app.environment:dev}")
-    private String environment;
 
     @PostMapping("/google")
     public ResponseEntity<LoginResponseDTO> authenticateWithGoogle(

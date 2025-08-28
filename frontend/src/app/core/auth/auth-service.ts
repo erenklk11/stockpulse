@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
 import { LoginRequestDTO } from '../../features/auth/login/model/login-request-dto';
 import {Observable, BehaviorSubject, of} from 'rxjs';
-import { environment } from '../../../environments/environments';
+import { environment } from '../../../environments/environment';
 import { RegisterRequestDto } from '../../features/auth/register/model/register-request-dto';
 import { Router } from '@angular/router';
-import {catchError, filter, take, tap} from 'rxjs/operators';
+import {catchError, tap} from 'rxjs/operators';
 import {ResetPasswordRequestDto} from '../../features/auth/password/model/reset-password-request-dto';
 import {ChangePasswordRequestDTO} from '../../features/settings/model/change-password-request-dto';
 
@@ -218,7 +218,6 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     const currentStatus = this.isAuthenticatedSubject.value;
-    // Since you're using server-side authentication, don't rely on Google tokens
     return currentStatus === true;
   }
 

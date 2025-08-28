@@ -18,14 +18,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AlertProcessingService {
 
-  @Value("${app.kafka.topics-alertTriggers:alert-triggers")
-  private String alertTriggersTopic;
+  private final String alertTriggersTopic = "alert-triggers";
 
   private final AlertService alertService;
   private final KafkaTemplate<String, Alert> alertKafkaTemplate;
 
 
-  @KafkaListener(topics = "${app.kafka.topics.stockPrices:stock-prices}", groupId = "alert-processor-group")
+  @KafkaListener(topics = "stock-prices", groupId = "alert-processor-group")
   public void processStockPrice(StockPriceDTO priceUpdate) {
     log.info("Processing price update for {}: {}", priceUpdate.getSymbol(), priceUpdate.getPrice());
 

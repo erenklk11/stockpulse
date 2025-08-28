@@ -21,13 +21,11 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${app.kafka.topics.stockPrices:stock-prices}")
-    private String stockPricesTopic;
-    @Value("${app.kafka.topics.alertTriggers:alert-triggers")
-    private String alertTriggersTopic;
+    private final String stockPricesTopic = "stock-prices";
+    private final String alertTriggersTopic = "alert-triggers";
 
     // Kafka Admin Configuration - needed for auto topic creation
     @Bean
@@ -48,7 +46,7 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic alertTriggersTopic() {
-        return TopicBuilder.name("alert-triggers")
+        return TopicBuilder.name(alertTriggersTopic)
                 .partitions(3)
                 .replicas(1)
                 .build();

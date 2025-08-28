@@ -1,0 +1,91 @@
+# Development Environment Configuration
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/stockpulse
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 20
+    open-in-view: false
+  kafka:
+    bootstrap-servers: kafka:29092
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+          issuer-uri: https://accounts.google.com
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: never
+
+google:
+  oauth:
+    client-id: ${GOOGLE_OAUTH_CLIENT_ID}
+    client-secret: ${GOOGLE_OAUTH_CLIENT_SECRET}
+    redirect-uri: ${GOOGLE_OAUTH_REDIRECT_URI}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:86400000}  # 24 hours in milliseconds
+    issuer: stockpulse
+  api:
+    finnhub:
+      url: https://finnhub.io/api/v1/
+      websocketUrl: wss://ws.finnhub.io
+      key: ${FINNHUB_API_KEY}
+    polygon:
+      url: https://api.polygon.io/
+      key: ${POLYGON_API_KEY}
+  email:
+    from: ${EMAIL_FROM:no-reply@stockpulse.com}
+  url: http://localhost:4200
+
+logging:
+  level:
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/stockpulse.log

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environments';
+import {environment} from '../../../environments/environment';
 import {WatchlistDTO} from '../../features/home/watchlists-section/model/watchlist';
 import {Observable} from 'rxjs';
 import {Watchlist} from '../../features/watchlist/model/watchlist';

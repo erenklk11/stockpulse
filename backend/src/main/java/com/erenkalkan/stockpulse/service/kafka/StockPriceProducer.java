@@ -17,7 +17,7 @@ public class StockPriceProducer {
 
     private final KafkaTemplate<String, StockPriceDTO> stockPriceKafkaTemplate;
 
-    @Value("${app.kafka.topics.stockPrices}")
+    @Value("stock-prices")
     private String stockPricesTopic;
 
 

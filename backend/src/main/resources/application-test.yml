@@ -1,0 +1,47 @@
+# Test Environment Configuration
+spring:
+  # H2 In-Memory Database for Testing
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  # JPA/Hibernate Configuration for Testing
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  # H2 Console (for debugging tests if needed)
+  h2:
+    console:
+      enabled: true
+
+  # Mail Configuration for Testing (Mock/Disabled)
+  mail:
+    host: localhost
+    port: 25
+    username: test@example.com
+    password: test
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+# JWT Configuration for Testing
+JWT_SECRET: dGVzdC1zZWNyZXQta2V5LWZvci10ZXN0aW5nLXB1cnBvc2VzLW9ubHktdGhpcy1pcy1ub3QtYS1zZWN1cmUta2V5
+JWT_EXPIRATION: 86400000
+JWT_ISSUER: stockpulse-test
+
+# Logging Configuration for Testing
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.erenkalkan.stockpulse: DEBUG

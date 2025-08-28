@@ -2,7 +2,6 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {WatchlistDTO} from './model/watchlist';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {HttpClient} from '@angular/common/http';
 import {WatchlistService} from '../../../core/services/watchlist-service';
 import {Router} from '@angular/router';
 
@@ -22,8 +21,7 @@ export class WatchlistsComponent implements OnInit {
   newWatchlistName: string = '';
   isCreating: boolean = false;
 
-  constructor(private http: HttpClient,
-              private cdr: ChangeDetectorRef,
+  constructor(private cdr: ChangeDetectorRef,
               private watchlistService: WatchlistService,
               private router: Router) {}
 

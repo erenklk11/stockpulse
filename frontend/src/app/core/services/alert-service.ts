@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AlertDTO} from '../../features/stocks/alert-popup/model/alert';
-import {environment} from '../../../environments/environments';
-import {Observable} from 'rxjs';
-import {Alert} from '../../features/watchlist/model/alert';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

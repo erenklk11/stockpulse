@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {StockDataDTO} from '../model/stock-data';
 
 @Component({
   selector: 'app-description-component',

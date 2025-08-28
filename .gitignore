@@ -217,14 +217,11 @@ $RECYCLE.BIN/
 # SENSITIVE CONFIGURATION FILES
 # ==============================================================================
 
-# Application YAML files with sensitive data
-**/application.yml
-**/application-*.yml
+**/application-prod.yml
 
 # Environment files
-**/*environment*.ts
-**/*environment*.js
-**/environments/
+**/*environment.prod.ts
+
 .env
 .env.local
 .env.development.local

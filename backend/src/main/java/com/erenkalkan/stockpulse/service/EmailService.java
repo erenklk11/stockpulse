@@ -19,10 +19,10 @@ public class EmailService {
 
   private final JavaMailSender sender;
 
-  @Value("${EMAIL_FROM}")
+  @Value("${app.email.from}")
   private String from;
 
-  @Value("${APP_URL}")
+  @Value("${app.url}")
   private String appUrl;
 
 

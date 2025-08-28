@@ -2,10 +2,9 @@ import {ChangeDetectorRef, Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../../environments/environments';
+import {environment} from '../../../../environments/environment';
 import {SearchTickerResponse} from './model/api-response';
 import {Router} from '@angular/router';
-import {routes} from '../../../app.routes';
 
 @Component({
   selector: 'app-search-component',

@@ -1,10 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {StocksWebsocketService} from '../../../../core/services/stocks-websocket-service';
 import {StockData} from './model/stock-data';
 import {CommonModule} from '@angular/common';
-import {HttpClient} from '@angular/common/http';
 import {Subscription} from 'rxjs';
-import {environment} from '../../../../../environments/environments';
+import {StocksService} from '../../../../core/services/stocks-service';
 
 @Component({
   selector: 'app-stocks-table-component',
@@ -15,7 +13,7 @@ import {environment} from '../../../../../environments/environments';
 })
 export class StocksTableComponent implements OnInit {
 
-  constructor(private http: HttpClient,
+  constructor(private stocksService: StocksService,
               private cdr: ChangeDetectorRef) {
 
     this.big6StocksTicker.set('NVDA', { symbol: 'NVDA', name: 'NVIDIA'});
@@ -44,7 +42,7 @@ export class StocksTableComponent implements OnInit {
     for (let i = 0; i < this.stocksArray.length; i++) {
 
       const symbol = this.stocksArray[i].symbol;
-      this.http.get<any>(environment.apiUrl + environment.endpoints.api.stockData + `?symbol=${symbol}`, {withCredentials: true}).subscribe({
+      this.stocksService.getHomePageStockData(symbol).subscribe({
         next: (response) => {
           this.stocksArray[i].industry = response.industry;
           this.stocksArray[i].exchange = response.exchange;
@@ -63,5 +61,4 @@ export class StocksTableComponent implements OnInit {
       });
     }
   }
-
 }

@@ -16,7 +16,7 @@ class AlertConsumer {
   private final NotificationService notificationService;
   private final EmailService emailService;
 
-  @KafkaListener(topics = "${app.kafka.topics.alertTriggers:alert-triggers}", groupId = "notification-group")
+  @KafkaListener(topics = "alert-triggers", groupId = "notification-group")
   public void consumeAlertTrigger(Alert alert) {
 
     log.info("Consumed triggered alert for user {}: {}", alert.getWatchlist().getUser(), alert.getStock().getSymbol());

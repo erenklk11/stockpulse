@@ -3,6 +3,7 @@ package com.erenkalkan.stockpulse.config;
 import com.erenkalkan.stockpulse.security.JwtAuthFilter;
 import com.erenkalkan.stockpulse.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -27,6 +28,9 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+  @Value("${app.url}")
+  private String APP_URL;
 
   private final JwtAuthFilter jwtAuthFilter;
   private final UserService userService;
@@ -59,7 +63,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Angular dev server
+    configuration.setAllowedOrigins(List.of(APP_URL));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Cookie"));
     configuration.setAllowCredentials(true);

@@ -17,7 +17,6 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
         errorMessage = error.message;
       }
 
-      // Option A: keep original error but add message
       const enhancedError = {
         ...error,
         friendlyMessage: errorMessage

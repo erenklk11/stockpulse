@@ -5,7 +5,6 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Loading State */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -30,7 +29,6 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Header Section */
 .header {
   display: flex;
   justify-content: space-between;
@@ -86,86 +84,13 @@
   color: #007bff;
 }
 
-.create-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.create-btn:hover {
-  background: #009dff;
-  transform: translateY(-1px);
-}
-
-.create-btn.active {
-  background: #6b7280;
-}
-
 .icon {
   font-size: 18px;
   font-weight: bold;
 }
 
-/* Create Form */
-.create-form {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 0;
-  margin-bottom: 24px;
-  max-height: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.create-form.show {
-  max-height: 300px;
-  padding: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 200px 150px;
-  gap: 12px;
-}
-
-.form-input, .form-select {
-  padding: 12px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.2s ease;
-  background: white;
-}
-
-.form-input:focus, .form-select:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
 .symbol-input {
   text-transform: uppercase;
-}
-
-.form-actions {
-  display: flex;
-  gap: 12px;
 }
 
 .btn {
@@ -202,7 +127,6 @@
   background: #e5e7eb;
 }
 
-/* Alerts Container */
 .alerts-container {
   margin-top: 32px;
 }
@@ -247,7 +171,6 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Alerts List */
 .alerts-list {
   display: flex;
   flex-direction: column;
@@ -288,11 +211,6 @@
   font-size: 18px;
   font-weight: 700;
   color: #1a1a1a;
-}
-
-.company-name {
-  color: #64748b;
-  font-size: 14px;
 }
 
 .status-badge {
@@ -432,7 +350,6 @@
   color: #dc2626;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -456,7 +373,6 @@
   font-size: 16px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .watchlist-detail-container {
     padding: 16px;
@@ -470,14 +386,6 @@
 
   .header-left {
     justify-content: flex-start;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions {
-    flex-direction: column;
   }
 
   .alerts-header {

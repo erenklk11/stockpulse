@@ -18,7 +18,7 @@ public class StockPriceConsumer {
   private final StockPriceWebSocketHandler webSocketHandler;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
-  @KafkaListener(topics = "${app.kafka.topics.stockPrices}", groupId = "websocket-server-group")
+  @KafkaListener(topics = "stock-prices", groupId = "websocket-server-group")
   public void listen(StockPriceDTO stockPrice) {
     try {
       String jsonMessage = objectMapper.writeValueAsString(stockPrice);

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ChangeDetectorRef} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NewsResponse} from './model/api-response';
-import {environment} from '../../../environments/environments';
+import {environment} from '../../../environments/environment';
 import {CommonModule} from '@angular/common';
 
 @Component({

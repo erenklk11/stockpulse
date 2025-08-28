@@ -1,8 +1,6 @@
 import {Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy} from '@angular/core';
 import {TickerTape} from '../../shared/ticker-tape/ticker-tape';
 import {Stock} from './model/stock';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environments';
 import {HeaderComponent} from '../../shared/header-component/header-component';
 import {DescriptionComponent} from './description/description-component';
 import {FinancialsComponent} from './financials/financials-component';
@@ -41,8 +39,7 @@ export class StocksComponent implements OnInit {
   selectedSection: string = 'description';
   private subscriptions: Subscription[] = [];
 
-  constructor(private http: HttpClient,
-              private cdr: ChangeDetectorRef,
+  constructor(private cdr: ChangeDetectorRef,
               private stocksWebsocketService: StocksWebsocketService,
               private stocksService: StocksService) {}
 
@@ -75,8 +72,7 @@ export class StocksComponent implements OnInit {
     this.symbol = new URLSearchParams(window.location.search).get('symbol') ?? '';
     if (this.symbol != null && this.symbol.trim() !== '') {
       this.isLoading = true;
-      this.http.get<any>(environment.apiUrl + environment.endpoints.api.stock + `?symbol=${this.symbol}`,
-        {withCredentials: true}).subscribe({
+      this.stocksService.getStockData(this.symbol).subscribe({
         next: (response) => {
 
           if (response != null) {

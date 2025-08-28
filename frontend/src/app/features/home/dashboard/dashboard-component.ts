@@ -23,7 +23,6 @@ export class DashboardComponent implements AfterViewInit {
     // Clear any existing widget first
     this.clearTradingViewWidget();
 
-    // Create and append the TradingView chart widget script
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
@@ -43,7 +42,6 @@ export class DashboardComponent implements AfterViewInit {
       "height": "100%"
     });
 
-    // Find the widget container and append the script - using the unique class name
     const widgetContainer = document.querySelector('.tradingview-chart-widget-container__widget');
     if (widgetContainer) {
       widgetContainer.appendChild(script);
