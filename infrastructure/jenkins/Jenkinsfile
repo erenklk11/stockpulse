@@ -1,0 +1,218 @@
+// Declarative Jenkinsfile for StockPulse Project
+// Local Jenkins deployment to Azure Cloud
+// This pipeline runs locally but deploys to Azure cloud services
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_USERNAME = 'erenklk11'
+        SPRING_APP_IMAGE = "${env.DOCKERHUB_USERNAME}/stockpulse-backend"
+        IMAGE_TAG = "build-${env.BUILD_NUMBER}"
+
+        AZURE_STATIC_WEB_APP_NAME = 'stockpulse-frontend'
+        AZURE_RESOURCE_GROUP = 'stockpulse-rg'
+        AZURE_CONTAINER_APP = 'stockpulse-backend-app'
+
+        MAVEN_OPTS = '-Xmx1024m'
+        NODE_OPTIONS = '--max_old_space_size=4096'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    echo '📥 Checking out source code...'
+                    git branch: 'main', url: 'https://github.com/erenklk11/stockpulse.git'
+                }
+            }
+        }
+
+        stage('Build & Test Backend') {
+            steps {
+                script {
+                    echo '🔨 Building and testing Spring Boot backend...'
+                    dir('backend') {
+                        sh './mvnw clean test'
+                        sh './mvnw clean package -DskipTests'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('backend') {
+                        publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    args '-u root'
+                }
+            }
+            steps {
+                script {
+                    echo '🔨 Building Angular frontend...'
+                    dir('frontend') {
+                        sh 'npm ci'
+                        sh 'npm run test -- --browsers=ChromeHeadless --watch=false'
+                        sh 'npm run build -- --configuration production'
+                        archiveArtifacts artifacts: 'dist/**/*', allowEmptyArchive: false
+                    }
+                }
+            }
+        }
+
+        stage('Build Backend Docker Image') {
+            steps {
+                script {
+                    echo '🐳 Building Docker image for Spring Boot backend...'
+                    dir('backend') {
+                        def backendImage = docker.build("${SPRING_APP_IMAGE}:${IMAGE_TAG}")
+                        backendImage.tag("${SPRING_APP_IMAGE}:latest")
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    echo '📤 Pushing Docker images to registry...'
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id',
+                                                    usernameVariable: 'DOCKER_USER',
+                                                    passwordVariable: 'DOCKER_PASS')]) {
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        sh "docker push ${SPRING_APP_IMAGE}:${IMAGE_TAG}"
+                        sh "docker push ${SPRING_APP_IMAGE}:latest"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Backend to Azure') {
+            steps {
+                script {
+                    echo '🚀 Deploying backend to Azure Container Apps...'
+                    withCredentials([
+                        usernamePassword(credentialsId: 'azure-service-principal',
+                                         usernameVariable: 'AZURE_CLIENT_ID',
+                                         passwordVariable: 'AZURE_CLIENT_SECRET'),
+                        string(credentialsId: 'azure-tenant-id', variable: 'AZURE_TENANT_ID'),
+                        string(credentialsId: 'azure-subscription-id', variable: 'AZURE_SUBSCRIPTION_ID')
+                    ]) {
+                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                        sh "az account set --subscription $AZURE_SUBSCRIPTION_ID"
+
+                        sh """
+                            az containerapp update \\
+                                --name ${AZURE_CONTAINER_APP} \\
+                                --resource-group ${AZURE_RESOURCE_GROUP} \\
+                                --image ${SPRING_APP_IMAGE}:${IMAGE_TAG}
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Frontend to Azure Static Web Apps') {
+            steps {
+                script {
+                    echo '🚀 Deploying frontend to Azure Static Web Apps...'
+                    withCredentials([
+                        usernamePassword(credentialsId: 'azure-service-principal',
+                                         usernameVariable: 'AZURE_CLIENT_ID',
+                                         passwordVariable: 'AZURE_CLIENT_SECRET'),
+                        string(credentialsId: 'azure-tenant-id', variable: 'AZURE_TENANT_ID'),
+                        string(credentialsId: 'azure-subscription-id', variable: 'AZURE_SUBSCRIPTION_ID')
+                    ]) {
+                        dir('frontend') {
+                            sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                            sh "az account set --subscription $AZURE_SUBSCRIPTION_ID"
+
+                            sh """
+                                az staticwebapp deploy \\
+                                    --name ${AZURE_STATIC_WEB_APP_NAME} \\
+                                    --resource-group ${AZURE_RESOURCE_GROUP} \\
+                                    --source-location dist/stockpulse-frontend \\
+                                    --output-location dist/stockpulse-frontend
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                script {
+                    echo '🏥 Performing health checks...'
+                    sleep time: 30, unit: 'SECONDS'
+
+                    withCredentials([string(credentialsId: 'backend-health-url', variable: 'BACKEND_URL')]) {
+                        sh '''
+                            echo "Checking backend health at: $BACKEND_URL"
+                            curl -f $BACKEND_URL || exit 1
+                        '''
+                    }
+
+                    sh '''
+                        frontend_url="https://my-static-web-app.azurestaticapps.net"
+                        echo "Checking frontend availability at: $frontend_url"
+                        curl -f $frontend_url || exit 1
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo '🧹 Cleaning up workspace...'
+            cleanWs()
+        }
+
+        success {
+            echo '✅ Deployment successful!'
+            script {
+                emailext (
+                    subject: "✅ StockPulse Deployment Successful - Build #${env.BUILD_NUMBER}",
+                    body: """
+                        <h2>Deployment Successful!</h2>
+                        <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+                        <p><strong>Backend Image:</strong> ${SPRING_APP_IMAGE}:${IMAGE_TAG}</p>
+                        <p><strong>Frontend URL:</strong> https://my-static-web-app.azurestaticapps.net</p>
+                        <p><strong>Backend API:</strong> (stored securely in Jenkins credentials)</p>
+                    """,
+                    to: 'erenklk11@gmail.com',
+                    mimeType: 'text/html'
+                )
+            }
+        }
+
+        failure {
+            echo '❌ Deployment failed!'
+            script {
+                emailext (
+                    subject: "❌ StockPulse Deployment Failed - Build #${env.BUILD_NUMBER}",
+                    body: """
+                        <h2>Deployment Failed!</h2>
+                        <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+                        <p><strong>Console Output:</strong> ${env.BUILD_URL}console</p>
+                        <p>Please check the logs for more details.</p>
+                    """,
+                    to: 'erenklk11@gmail.com',
+                    mimeType: 'text/html'
+                )
+            }
+        }
+
+        unstable {
+            echo '⚠️ Build unstable - some tests may have failed'
+        }
+    }
+}
