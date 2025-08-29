@@ -10,9 +10,12 @@ pipeline {
         SPRING_APP_IMAGE = "${env.DOCKERHUB_USERNAME}/stockpulse-backend"
         IMAGE_TAG = "build-${env.BUILD_NUMBER}"
 
+        AZURE_WEBAPP_NAME = 'stockpulse-backend'
         AZURE_STATIC_WEB_APP_NAME = 'stockpulse-frontend'
         AZURE_RESOURCE_GROUP = 'stockpulse-rg'
-        AZURE_CONTAINER_APP = 'stockpulse-backend-app'
+        AZURE_APP_SERVICE_PLAN = 'stockpulse-appservice-plan'
+
+        DOCKER_REGISTRY_URL = 'https://index.docker.io/v1/'
 
         MAVEN_OPTS = '-Xmx1024m'
         NODE_OPTIONS = '--max_old_space_size=4096'
@@ -97,22 +100,46 @@ pipeline {
         stage('Deploy Backend to Azure') {
             steps {
                 script {
-                    echo '🚀 Deploying backend to Azure Container Apps...'
+                    echo '🚀 Deploying backend to Azure Web App for Containers...'
                     withCredentials([
                         usernamePassword(credentialsId: 'azure-service-principal',
                                          usernameVariable: 'AZURE_CLIENT_ID',
                                          passwordVariable: 'AZURE_CLIENT_SECRET'),
                         string(credentialsId: 'azure-tenant-id', variable: 'AZURE_TENANT_ID'),
-                        string(credentialsId: 'azure-subscription-id', variable: 'AZURE_SUBSCRIPTION_ID')
+                        string(credentialsId: 'azure-subscription-id', variable: 'AZURE_SUBSCRIPTION_ID'),
+                        usernamePassword(credentialsId: 'dockerhub-credentials-id',
+                                       usernameVariable: 'DOCKER_REGISTRY_USER',
+                                       passwordVariable: 'DOCKER_REGISTRY_PASSWORD')
                     ]) {
                         sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
                         sh "az account set --subscription $AZURE_SUBSCRIPTION_ID"
 
+                        // Create Web App if it doesn't exist (idempotent)
                         sh """
-                            az containerapp update \\
-                                --name ${AZURE_CONTAINER_APP} \\
-                                --resource-group ${AZURE_RESOURCE_GROUP} \\
-                                --image ${SPRING_APP_IMAGE}:${IMAGE_TAG}
+                            az webapp create \
+                                --resource-group ${AZURE_RESOURCE_GROUP} \
+                                --plan ${AZURE_APP_SERVICE_PLAN} \
+                                --name ${AZURE_WEBAPP_NAME} \
+                                --deployment-container-image-name ${SPRING_APP_IMAGE}:${IMAGE_TAG} \
+                                --runtime "JAVA|17-java17" || echo "Web App already exists"
+                        """
+
+                        // Update container image for existing Web App
+                        sh """
+                            az webapp config container set \
+                                --resource-group ${AZURE_RESOURCE_GROUP} \
+                                --name ${AZURE_WEBAPP_NAME} \
+                                --docker-custom-image-name ${SPRING_APP_IMAGE}:${IMAGE_TAG} \
+                                --docker-registry-server-url ${DOCKER_REGISTRY_URL} \
+                                --docker-registry-server-user \$DOCKER_REGISTRY_USER \
+                                --docker-registry-server-password \$DOCKER_REGISTRY_PASSWORD
+                        """
+
+                        // Restart app so new container is picked up
+                        sh """
+                            az webapp restart \
+                                --name ${AZURE_WEBAPP_NAME} \
+                                --resource-group ${AZURE_RESOURCE_GROUP}
                         """
                     }
                 }
@@ -153,18 +180,19 @@ pipeline {
                     echo '🏥 Performing health checks...'
                     sleep time: 30, unit: 'SECONDS'
 
-                    withCredentials([string(credentialsId: 'backend-health-url', variable: 'BACKEND_URL')]) {
-                        sh '''
-                            echo "Checking backend health at: $BACKEND_URL"
-                            curl -f $BACKEND_URL || exit 1
-                        '''
-                    }
+                    // Backend health check using the deployed Web App URL
+                    sh """
+                        backend_url="https://${AZURE_WEBAPP_NAME}.azurewebsites.net/actuator/health"
+                        echo "Checking backend health at: \$backend_url"
+                        curl -f \$backend_url || exit 1
+                    """
 
-                    sh '''
-                        frontend_url="https://my-static-web-app.azurestaticapps.net"
-                        echo "Checking frontend availability at: $frontend_url"
-                        curl -f $frontend_url || exit 1
-                    '''
+                    // Frontend health check
+                    sh """
+                        frontend_url="https://${AZURE_STATIC_WEB_APP_NAME}.azurestaticapps.net"
+                        echo "Checking frontend availability at: \$frontend_url"
+                        curl -f \$frontend_url || exit 1
+                    """
                 }
             }
         }
@@ -185,8 +213,8 @@ pipeline {
                         <h2>Deployment Successful!</h2>
                         <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
                         <p><strong>Backend Image:</strong> ${SPRING_APP_IMAGE}:${IMAGE_TAG}</p>
-                        <p><strong>Frontend URL:</strong> https://my-static-web-app.azurestaticapps.net</p>
-                        <p><strong>Backend API:</strong> (stored securely in Jenkins credentials)</p>
+                        <p><strong>Frontend URL:</strong> https://${AZURE_STATIC_WEB_APP_NAME}.azurestaticapps.net</p>
+                        <p><strong>Backend API:</strong> https://${AZURE_WEBAPP_NAME}.azurewebsites.net</p>
                     """,
                     to: 'erenklk11@gmail.com',
                     mimeType: 'text/html'
